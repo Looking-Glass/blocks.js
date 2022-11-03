@@ -1,4 +1,5 @@
-import request from "graphql-request"
+import { TypedQueryDocumentNode } from "graphql"
+import request, { RequestDocument, RequestExtendedOptions, RequestOptions, Variables } from "graphql-request"
 import { FindHologramDocument, MyHologramsDocument } from "./gql/graphql"
 
 const apiUrl = "https://blocks.glass/api/graphql"
@@ -11,28 +12,31 @@ export class BlocksClient {
 	}
 
 	public async getHologram(id: number) {
-		return await request(
-			apiUrl,
-			FindHologramDocument,
-			{
+		return await this.api({
+			document: FindHologramDocument,
+			variables: {
 				id: id.toString(),
 			},
-			{
-				Authorization: `Bearer ${this.token}`,
-			}
-		)
+		})
 	}
 
 	public async getMyHolograms(first: number = 20) {
-		return await request(
-			apiUrl,
-			MyHologramsDocument,
-			{
+		return await this.api({
+			document: MyHologramsDocument,
+			variables: {
 				first,
 			},
-			{
+		})
+	}
+
+	private async api<T = any, V = Variables>(options: RequestOptions<V, T>): Promise<T> {
+		const test: RequestExtendedOptions = {
+			document: options.document,
+			url: apiUrl,
+			requestHeaders: {
 				Authorization: `Bearer ${this.token}`,
-			}
-		)
+			},
+		}
+		return await request(test)
 	}
 }
