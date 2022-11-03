@@ -66,6 +66,7 @@ var __publicField = (obj, key, value) => {
     async api(options) {
       const test = {
         document: options.document,
+        variables: options == null ? void 0 : options.variables,
         url: apiUrl,
         requestHeaders: {
           Authorization: `Bearer ${this.token}`

@@ -42,6 +42,7 @@ export class BlocksClient {
 	public async api<T = any, V = Variables>(options: RequestOptions<V, T>): Promise<T> {
 		const test: RequestExtendedOptions = {
 			document: options.document,
+			variables: options?.variables as Variables,
 			url: apiUrl,
 			requestHeaders: {
 				Authorization: `Bearer ${this.token}`,
