@@ -1,0 +1,18 @@
+query FindHologram($id: String!) {
+	hologramFindById(id: $id) {
+		id
+		title
+		aspectRatio
+		quiltCols
+		quiltRows
+		quiltTileCount
+		sourceImages {
+			id
+			url
+			width
+			height
+			type
+			fileSize
+		}
+	}
+}

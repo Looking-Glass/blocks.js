@@ -1,0 +1,23 @@
+query MyHolograms($first: Int = 20) {
+	me {
+		username
+		holograms(first: $first) {
+			nodes {
+				id
+				title
+				aspectRatio
+				quiltCols
+				quiltRows
+				quiltTileCount
+				sourceImages {
+					id
+					url
+					width
+					height
+					type
+					fileSize
+				}
+			}
+		}
+	}
+}

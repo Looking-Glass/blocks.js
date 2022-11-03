@@ -1,0 +1,41 @@
+{
+	"name": "@lookingglass/blocks.js",
+	"private": true,
+	"version": "0.0.1",
+	"type": "module",
+	"module": "./dist/looking-glass-blocks.js",
+	"main": "./dist/looking-glass-blocks.umd.cjs",
+	"types": "./dist/main.d.ts",
+	"exports": {
+		".": {
+			"import": "./dist/looking-glass-blocks.js",
+			"require": "./dist/looking-glass-blocks.umd.cjs"
+		}
+	},
+	"files": [
+		"dist"
+	],
+	"graphql": {
+		"schema": "https://blocks.glass/api/graphql"
+	},
+	"scripts": {
+		"dev": "vite",
+		"build": "tsc && vite build",
+		"preview": "vite preview",
+		"codegen": "graphql-codegen --config codegen.ts"
+	},
+	"devDependencies": {
+		"@graphql-codegen/cli": "2.13.9",
+		"@graphql-codegen/client-preset": "1.1.3",
+		"@graphql-codegen/introspection": "2.2.1",
+		"@rollup/plugin-typescript": "^9.0.2",
+		"express": "^4.18.2",
+		"rollup-plugin-typescript-paths": "^1.4.0",
+		"typescript": "^4.8.4",
+		"vite": "^3.2.0"
+	},
+	"dependencies": {
+		"graphql": "^16.6.0",
+		"graphql-request": "^5.0.0"
+	}
+}
