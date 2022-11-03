@@ -1,17 +1,25 @@
-import { TypedQueryDocumentNode } from "graphql"
-import request, { RequestDocument, RequestExtendedOptions, RequestOptions, Variables } from "graphql-request"
-import { FindHologramDocument, MyHologramsDocument } from "./gql/graphql"
+import request, { RequestExtendedOptions, RequestOptions, Variables } from "graphql-request"
+import { FindHologramDocument, MeDocument, MyHologramsDocument } from "./gql/graphql"
 
 const apiUrl = "https://blocks.glass/api/graphql"
 
 export class BlocksClient {
 	private token: string
 
+	/** Initialize the BlocksClient with a valid JWT */
 	constructor(token: string) {
 		this.token = token
 	}
 
-	public async getHologram(id: number) {
+	/** Return info about the currently signed in user */
+	public async me() {
+		return await this.api({
+			document: MeDocument,
+		})
+	}
+
+	/** Fetch a hologram */
+	public async hologram(id: number) {
 		return await this.api({
 			document: FindHologramDocument,
 			variables: {
@@ -20,7 +28,8 @@ export class BlocksClient {
 		})
 	}
 
-	public async getMyHolograms(first: number = 20) {
+	/** Fetch your public holograms */
+	public async myHolograms(first: number = 20) {
 		return await this.api({
 			document: MyHologramsDocument,
 			variables: {
@@ -29,7 +38,8 @@ export class BlocksClient {
 		})
 	}
 
-	private async api<T = any, V = Variables>(options: RequestOptions<V, T>): Promise<T> {
+	/** Call the GraphQL API directly  */
+	public async api<T = any, V = Variables>(options: RequestOptions<V, T>): Promise<T> {
 		const test: RequestExtendedOptions = {
 			document: options.document,
 			url: apiUrl,

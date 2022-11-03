@@ -1,6 +1,8 @@
 query MyHolograms($first: Int = 20) {
 	me {
 		username
+		displayName
+
 		holograms(first: $first) {
 			nodes {
 				id

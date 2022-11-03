@@ -447,6 +447,21 @@ export declare type FindHologramQuery = {
         } | null> | null;
     } | null;
 };
+export declare type MeQueryVariables = Exact<{
+    [key: string]: never;
+}>;
+export declare type MeQuery = {
+    __typename?: 'Query';
+    me?: {
+        __typename?: 'User';
+        id?: number | null;
+        username?: string | null;
+        displayName?: string | null;
+        email?: string | null;
+        picture?: string | null;
+        createdAt?: any | null;
+    } | null;
+};
 export declare type MyHologramsQueryVariables = Exact<{
     first?: InputMaybe<Scalars['Int']>;
 }>;
@@ -455,6 +470,7 @@ export declare type MyHologramsQuery = {
     me?: {
         __typename?: 'User';
         username?: string | null;
+        displayName?: string | null;
         holograms?: {
             __typename?: 'HologramConnection';
             nodes?: Array<{
@@ -480,6 +496,9 @@ export declare type MyHologramsQuery = {
 };
 export declare const FindHologramDocument: DocumentNode<FindHologramQuery, Exact<{
     id: Scalars['String'];
+}>>;
+export declare const MeDocument: DocumentNode<MeQuery, Exact<{
+    [key: string]: never;
 }>>;
 export declare const MyHologramsDocument: DocumentNode<MyHologramsQuery, Exact<{
     first?: InputMaybe<number> | undefined;
