@@ -1,8 +1,9 @@
 import request, { RequestExtendedOptions, RequestOptions, Variables } from "graphql-request"
+import { BlocksSpaAuth } from "./auth"
 import {
 	FindHologramDocument,
-	FindHologramQuery,
 	FindPlaylistDocument,
+	FindPlaylistQuery,
 	MeDocument,
 	MyHologramsDocument,
 } from "./gql/graphql"
@@ -11,6 +12,7 @@ const apiUrl = "https://blocks.glass/api/graphql"
 
 export class BlocksClient {
 	private token: string
+	private auth: BlocksSpaAuth | undefined
 
 	/** Initialize the BlocksClient with a valid JWT */
 	constructor(token: string) {
@@ -38,7 +40,7 @@ export class BlocksClient {
 	 * @id The id of the playlist
 	 * @limit Number of total holograms you want to load in
 	 */
-	public async playlist(id: number, limit: number = 100) {
+	public async playlist(id: number, limit: number = 100): Promise<FindPlaylistQuery> {
 		return await this.api({
 			document: FindPlaylistDocument,
 			variables: {
