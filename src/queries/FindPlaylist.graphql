@@ -1,0 +1,51 @@
+query FindPlaylist($id: Int, $lookup: String, $first: Int = 50) {
+	playlist(id: $id, lookup: $lookup) {
+		id
+		title
+		description
+		permalink
+		privacy
+		updatedAt
+
+		items(first: $first) {
+			totalCount
+			pageInfo {
+				hasNextPage
+				hasPreviousPage
+				startCursor
+				endCursor
+			}
+			edges {
+				node {
+					id
+					hologramId
+					position
+					hologram {
+						id
+						title
+						aspectRatio
+						quiltCols
+						quiltRows
+						quiltTileCount
+						sourceImages {
+							id
+							url
+							width
+							height
+							type
+							fileSize
+						}
+					}
+				}
+			}
+		}
+
+		thumbnail {
+			id
+			url
+			width
+			height
+			type
+		}
+	}
+}

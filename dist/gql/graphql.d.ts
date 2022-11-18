@@ -36,6 +36,10 @@ export declare type Hologram = {
     description?: Maybe<Scalars['String']>;
     id?: Maybe<Scalars['Int']>;
     isPublished?: Maybe<Scalars['Boolean']>;
+    /** Get the URL path for this hologram. */
+    path?: Maybe<Scalars['String']>;
+    /** Get the full permalink URL for this hologram. */
+    permalink?: Maybe<Scalars['String']>;
     /** Animated GIF previews */
     previewGifAssets?: Maybe<Array<Maybe<ImageAsset>>>;
     /** Animated MP4 previews */
@@ -51,12 +55,17 @@ export declare type Hologram = {
     /** Thumbnail preview */
     thumbnail?: Maybe<ImageAsset>;
     title?: Maybe<Scalars['String']>;
+    /** Get a custom tweet message for this hologram. (This is used for Looking Glass Photobooth events) */
+    tweetMessage?: Maybe<Scalars['String']>;
     type?: Maybe<HologramType>;
     user?: Maybe<User>;
     /** Restricted access */
     uuid?: Maybe<Scalars['String']>;
 };
 export declare type HologramQuiltAngleImagesArgs = {
+    width?: InputMaybe<Scalars['Int']>;
+};
+export declare type HologramThumbnailArgs = {
     width?: InputMaybe<Scalars['Int']>;
 };
 export declare type HologramConnection = {
@@ -114,6 +123,8 @@ export declare type Mutation = {
     replaceQuiltHologram: Hologram;
     /** Update a playlist's metadata */
     updatePlaylist: Playlist;
+    /** Update an item in a playlist */
+    updatePlaylistItem: PlaylistItem;
     updateQuiltHologram: Hologram;
     updateUser: User;
 };
@@ -186,16 +197,20 @@ export declare type MutationUpdatePlaylistArgs = {
     privacy?: InputMaybe<PlaylistPrivacy>;
     title?: InputMaybe<Scalars['String']>;
 };
+export declare type MutationUpdatePlaylistItemArgs = {
+    id: Scalars['Int'];
+    position: Scalars['Int'];
+};
 export declare type MutationUpdateQuiltHologramArgs = {
-    aspectRatio: Scalars['Float'];
+    aspectRatio?: InputMaybe<Scalars['Float']>;
     description?: InputMaybe<Scalars['String']>;
     id: Scalars['Int'];
     isPublished?: InputMaybe<Scalars['Boolean']>;
-    privacy?: InputMaybe<Scalars['String']>;
-    quiltCols: Scalars['Int'];
-    quiltRows: Scalars['Int'];
-    quiltTileCount: Scalars['Int'];
-    title: Scalars['String'];
+    privacy?: InputMaybe<PrivacyType>;
+    quiltCols?: InputMaybe<Scalars['Int']>;
+    quiltRows?: InputMaybe<Scalars['Int']>;
+    quiltTileCount?: InputMaybe<Scalars['Int']>;
+    title?: InputMaybe<Scalars['String']>;
 };
 export declare type MutationUpdateUserArgs = {
     displayName?: InputMaybe<Scalars['String']>;
@@ -218,11 +233,20 @@ export declare type Playlist = {
     __typename?: 'Playlist';
     createdAt?: Maybe<Scalars['DateTime']>;
     description?: Maybe<Scalars['String']>;
-    holograms?: Maybe<PlaylistItemConnection>;
+    /** A curated hologram to represent this playlist. If 'featuredHologramId' is blank, this returns the first hologram in the playlist */
+    featuredHologram?: Maybe<Hologram>;
+    featuredHologramId?: Maybe<Scalars['Int']>;
     id?: Maybe<Scalars['Int']>;
     isPublished?: Maybe<Scalars['Boolean']>;
+    /** Items (holograms) in this playlist. Only public holograms are returned */
+    items?: Maybe<PlaylistItems_Connection>;
+    /** @deprecated Please use items.totalCount instead */
+    itemsCount?: Maybe<Scalars['Int']>;
+    path?: Maybe<Scalars['String']>;
+    permalink?: Maybe<Scalars['String']>;
     /** The privacy status of this playlist. (Restricted) */
     privacy?: Maybe<PlaylistPrivacy>;
+    thumbnail?: Maybe<ImageAsset>;
     title?: Maybe<Scalars['String']>;
     updatedAt?: Maybe<Scalars['DateTime']>;
     /** The owner of this playlist */
@@ -233,11 +257,15 @@ export declare type Playlist = {
     uuid?: Maybe<Scalars['String']>;
 };
 /** A playlist contains a collection of holograms. */
-export declare type PlaylistHologramsArgs = {
+export declare type PlaylistItemsArgs = {
     after?: InputMaybe<Scalars['String']>;
     before?: InputMaybe<Scalars['String']>;
     first?: InputMaybe<Scalars['Int']>;
     last?: InputMaybe<Scalars['Int']>;
+};
+/** A playlist contains a collection of holograms. */
+export declare type PlaylistThumbnailArgs = {
+    width?: InputMaybe<Scalars['Int']>;
 };
 export declare type PlaylistEdge = {
     __typename?: 'PlaylistEdge';
@@ -261,15 +289,6 @@ export declare type PlaylistItem = {
     updatedAt?: Maybe<Scalars['DateTime']>;
     uploadedAt?: Maybe<Scalars['DateTime']>;
 };
-export declare type PlaylistItemConnection = {
-    __typename?: 'PlaylistItemConnection';
-    /** https://relay.dev/graphql/connections.htm#sec-Edge-Types */
-    edges?: Maybe<Array<Maybe<PlaylistItemEdge>>>;
-    /** Flattened list of PlaylistItem type */
-    nodes?: Maybe<Array<Maybe<PlaylistItem>>>;
-    /** https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo */
-    pageInfo: PageInfo;
-};
 export declare type PlaylistItemEdge = {
     __typename?: 'PlaylistItemEdge';
     /** https://relay.dev/graphql/connections.htm#sec-Cursor */
@@ -277,7 +296,24 @@ export declare type PlaylistItemEdge = {
     /** https://relay.dev/graphql/connections.htm#sec-Node */
     node?: Maybe<PlaylistItem>;
 };
+export declare type PlaylistItems_Connection = {
+    __typename?: 'PlaylistItems_Connection';
+    /** https://relay.dev/graphql/connections.htm#sec-Edge-Types */
+    edges?: Maybe<Array<Maybe<PlaylistItemEdge>>>;
+    /** Flattened list of PlaylistItem type */
+    nodes?: Maybe<Array<Maybe<PlaylistItem>>>;
+    /** https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo */
+    pageInfo: PageInfo;
+    totalCount?: Maybe<Scalars['Int']>;
+};
 export declare enum PlaylistPrivacy {
+    OnlyMe = "ONLY_ME",
+    Password = "PASSWORD",
+    Public = "PUBLIC",
+    Unlisted = "UNLISTED"
+}
+export declare enum PlaylistPrivacyFilter {
+    All = "ALL",
     OnlyMe = "ONLY_ME",
     Password = "PASSWORD",
     Public = "PUBLIC",
@@ -292,7 +328,7 @@ export declare type Query = {
     __typename?: 'Query';
     /** Searches for a hologram by id or uuid */
     hologramFindById?: Maybe<Hologram>;
-    holograms?: Maybe<HologramConnection>;
+    holograms?: Maybe<QueryHolograms_Connection>;
     me?: Maybe<User>;
     myHolograms?: Maybe<HologramConnection>;
     /** Search for a specific playlist */
@@ -333,6 +369,7 @@ export declare type QueryPlaylistsArgs = {
     first?: InputMaybe<Scalars['Int']>;
     last?: InputMaybe<Scalars['Int']>;
     orderBy?: InputMaybe<Scalars['String']>;
+    privacy?: InputMaybe<PlaylistPrivacyFilter>;
 };
 export declare type QueryUserArgs = {
     id?: InputMaybe<Scalars['Int']>;
@@ -349,6 +386,16 @@ export declare type QueryUsersArgs = {
     before?: InputMaybe<Scalars['String']>;
     first?: InputMaybe<Scalars['Int']>;
     last?: InputMaybe<Scalars['Int']>;
+};
+export declare type QueryHolograms_Connection = {
+    __typename?: 'QueryHolograms_Connection';
+    /** https://relay.dev/graphql/connections.htm#sec-Edge-Types */
+    edges?: Maybe<Array<Maybe<HologramEdge>>>;
+    /** Flattened list of Hologram type */
+    nodes?: Maybe<Array<Maybe<Hologram>>>;
+    /** https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo */
+    pageInfo: PageInfo;
+    totalCount?: Maybe<Scalars['Int']>;
 };
 export declare type QueryPlaylists_Connection = {
     __typename?: 'QueryPlaylists_Connection';
@@ -370,7 +417,7 @@ export declare type User = {
     displayName?: Maybe<Scalars['String']>;
     /** Restricted access */
     email?: Maybe<Scalars['String']>;
-    holograms?: Maybe<HologramConnection>;
+    holograms?: Maybe<UserHolograms_Connection>;
     id?: Maybe<Scalars['Int']>;
     picture?: Maybe<Scalars['String']>;
     playlists?: Maybe<UserPlaylists_Connection>;
@@ -396,6 +443,7 @@ export declare type UserPlaylistsArgs = {
     first?: InputMaybe<Scalars['Int']>;
     last?: InputMaybe<Scalars['Int']>;
     orderBy?: InputMaybe<Scalars['String']>;
+    privacy?: InputMaybe<PlaylistPrivacyFilter>;
 };
 export declare type UserConnection = {
     __typename?: 'UserConnection';
@@ -412,6 +460,16 @@ export declare type UserEdge = {
     cursor: Scalars['String'];
     /** https://relay.dev/graphql/connections.htm#sec-Node */
     node?: Maybe<User>;
+};
+export declare type UserHolograms_Connection = {
+    __typename?: 'UserHolograms_Connection';
+    /** https://relay.dev/graphql/connections.htm#sec-Edge-Types */
+    edges?: Maybe<Array<Maybe<HologramEdge>>>;
+    /** Flattened list of Hologram type */
+    nodes?: Maybe<Array<Maybe<Hologram>>>;
+    /** https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo */
+    pageInfo: PageInfo;
+    totalCount?: Maybe<Scalars['Int']>;
 };
 export declare type UserPlaylists_Connection = {
     __typename?: 'UserPlaylists_Connection';
@@ -447,6 +505,69 @@ export declare type FindHologramQuery = {
         } | null> | null;
     } | null;
 };
+export declare type FindPlaylistQueryVariables = Exact<{
+    id?: InputMaybe<Scalars['Int']>;
+    lookup?: InputMaybe<Scalars['String']>;
+    first?: InputMaybe<Scalars['Int']>;
+}>;
+export declare type FindPlaylistQuery = {
+    __typename?: 'Query';
+    playlist?: {
+        __typename?: 'Playlist';
+        id?: number | null;
+        title?: string | null;
+        description?: string | null;
+        permalink?: string | null;
+        privacy?: PlaylistPrivacy | null;
+        updatedAt?: any | null;
+        items?: {
+            __typename?: 'PlaylistItems_Connection';
+            totalCount?: number | null;
+            pageInfo: {
+                __typename?: 'PageInfo';
+                hasNextPage: boolean;
+                hasPreviousPage: boolean;
+                startCursor?: string | null;
+                endCursor?: string | null;
+            };
+            edges?: Array<{
+                __typename?: 'PlaylistItemEdge';
+                node?: {
+                    __typename?: 'PlaylistItem';
+                    id?: number | null;
+                    hologramId?: number | null;
+                    position?: number | null;
+                    hologram?: {
+                        __typename?: 'Hologram';
+                        id?: number | null;
+                        title?: string | null;
+                        aspectRatio?: number | null;
+                        quiltCols?: number | null;
+                        quiltRows?: number | null;
+                        quiltTileCount?: number | null;
+                        sourceImages?: Array<{
+                            __typename?: 'ImageAsset';
+                            id?: number | null;
+                            url?: string | null;
+                            width?: number | null;
+                            height?: number | null;
+                            type?: string | null;
+                            fileSize?: number | null;
+                        } | null> | null;
+                    } | null;
+                } | null;
+            } | null> | null;
+        } | null;
+        thumbnail?: {
+            __typename?: 'ImageAsset';
+            id?: number | null;
+            url?: string | null;
+            width?: number | null;
+            height?: number | null;
+            type?: string | null;
+        } | null;
+    } | null;
+};
 export declare type MeQueryVariables = Exact<{
     [key: string]: never;
 }>;
@@ -472,7 +593,7 @@ export declare type MyHologramsQuery = {
         username?: string | null;
         displayName?: string | null;
         holograms?: {
-            __typename?: 'HologramConnection';
+            __typename?: 'UserHolograms_Connection';
             nodes?: Array<{
                 __typename?: 'Hologram';
                 id?: number | null;
@@ -496,6 +617,11 @@ export declare type MyHologramsQuery = {
 };
 export declare const FindHologramDocument: DocumentNode<FindHologramQuery, Exact<{
     id: Scalars['String'];
+}>>;
+export declare const FindPlaylistDocument: DocumentNode<FindPlaylistQuery, Exact<{
+    id?: InputMaybe<number> | undefined;
+    lookup?: InputMaybe<string> | undefined;
+    first?: InputMaybe<number> | undefined;
 }>>;
 export declare const MeDocument: DocumentNode<MeQuery, Exact<{
     [key: string]: never;

@@ -1,5 +1,11 @@
 import request, { RequestExtendedOptions, RequestOptions, Variables } from "graphql-request"
-import { FindHologramDocument, MeDocument, MyHologramsDocument } from "./gql/graphql"
+import {
+	FindHologramDocument,
+	FindHologramQuery,
+	FindPlaylistDocument,
+	MeDocument,
+	MyHologramsDocument,
+} from "./gql/graphql"
 
 const apiUrl = "https://blocks.glass/api/graphql"
 
@@ -24,6 +30,20 @@ export class BlocksClient {
 			document: FindHologramDocument,
 			variables: {
 				id: id.toString(),
+			},
+		})
+	}
+
+	/** Fetch a playlist
+	 * @id The id of the playlist
+	 * @limit Number of total holograms you want to load in
+	 */
+	public async playlist(id: number, limit: number = 100) {
+		return await this.api({
+			document: FindPlaylistDocument,
+			variables: {
+				id,
+				first: limit,
 			},
 		})
 	}
