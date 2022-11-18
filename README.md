@@ -46,6 +46,8 @@ Once the user logs in, they will be redirected back to your redirect page and wi
 ### API calls
 Now let's put it all together.
 ```ts
+import { BlocksClient, BlocksSpaAuth } from "@lookingglass/blocks.js"
+
 await BlocksSpaAuth.init({ ... })
 
 // Once the user is signed in, this will return a valid JSON web token
