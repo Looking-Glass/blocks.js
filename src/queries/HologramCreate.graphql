@@ -1,0 +1,6 @@
+mutation CreateQuiltHologram($data: CreateQuiltHologramInputType) {
+	createQuiltHologram(data: $data) {
+		id
+		permalink
+	}
+}

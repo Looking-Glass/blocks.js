@@ -30,6 +30,23 @@ export declare type BatchPayload = {
     __typename?: 'BatchPayload';
     count?: Maybe<Scalars['Int']>;
 };
+/** The input arguments for the createQuiltHologram mutation. */
+export declare type CreateQuiltHologramInputType = {
+    aspectRatio?: InputMaybe<Scalars['Float']>;
+    description?: InputMaybe<Scalars['String']>;
+    fileSize: Scalars['Int'];
+    height: Scalars['Int'];
+    imageUrl: Scalars['String'];
+    isPublished?: InputMaybe<Scalars['Boolean']>;
+    /** Restricted */
+    privacy?: InputMaybe<PrivacyType>;
+    quiltCols?: InputMaybe<Scalars['Int']>;
+    quiltRows?: InputMaybe<Scalars['Int']>;
+    quiltTileCount?: InputMaybe<Scalars['Int']>;
+    title: Scalars['String'];
+    type?: InputMaybe<HologramType>;
+    width: Scalars['Int'];
+};
 export declare type Hologram = {
     __typename?: 'Hologram';
     aspectRatio?: Maybe<Scalars['Float']>;
@@ -111,6 +128,7 @@ export declare type Mutation = {
     createPlaylistItem: PlaylistItem;
     /** Add one or more holograms to a playlist. */
     createPlaylistItems: BatchPayload;
+    /** After uploading an image to Blocks, use this mutation to create a quilt hologram based on the source image. Note: Please use the `data` to pass in all the input data. All the other args are now deprecated. */
     createQuiltHologram: Hologram;
     deleteHologram: Hologram;
     /** Restricted */
@@ -154,18 +172,19 @@ export declare type MutationCreatePlaylistItemsArgs = {
 };
 export declare type MutationCreateQuiltHologramArgs = {
     aspectRatio?: InputMaybe<Scalars['Float']>;
+    data?: InputMaybe<CreateQuiltHologramInputType>;
     description?: InputMaybe<Scalars['String']>;
-    fileSize: Scalars['Int'];
-    height: Scalars['Int'];
-    imageUrl: Scalars['String'];
+    fileSize?: InputMaybe<Scalars['Int']>;
+    height?: InputMaybe<Scalars['Int']>;
+    imageUrl?: InputMaybe<Scalars['String']>;
     isPublished?: InputMaybe<Scalars['Boolean']>;
     privacy?: InputMaybe<PrivacyType>;
     quiltCols?: InputMaybe<Scalars['Int']>;
     quiltRows?: InputMaybe<Scalars['Int']>;
     quiltTileCount?: InputMaybe<Scalars['Int']>;
-    title: Scalars['String'];
+    title?: InputMaybe<Scalars['String']>;
     type?: InputMaybe<HologramType>;
-    width: Scalars['Int'];
+    width?: InputMaybe<Scalars['Int']>;
 };
 export declare type MutationDeleteHologramArgs = {
     id: Scalars['Int'];
@@ -568,6 +587,17 @@ export declare type FindPlaylistQuery = {
         } | null;
     } | null;
 };
+export declare type CreateQuiltHologramMutationVariables = Exact<{
+    data?: InputMaybe<CreateQuiltHologramInputType>;
+}>;
+export declare type CreateQuiltHologramMutation = {
+    __typename?: 'Mutation';
+    createQuiltHologram: {
+        __typename?: 'Hologram';
+        id?: number | null;
+        permalink?: string | null;
+    };
+};
 export declare type MeQueryVariables = Exact<{
     [key: string]: never;
 }>;
@@ -622,6 +652,9 @@ export declare const FindPlaylistDocument: DocumentNode<FindPlaylistQuery, Exact
     id?: InputMaybe<number> | undefined;
     lookup?: InputMaybe<string> | undefined;
     first?: InputMaybe<number> | undefined;
+}>>;
+export declare const CreateQuiltHologramDocument: DocumentNode<CreateQuiltHologramMutation, Exact<{
+    data?: InputMaybe<CreateQuiltHologramInputType> | undefined;
 }>>;
 export declare const MeDocument: DocumentNode<MeQuery, Exact<{
     [key: string]: never;

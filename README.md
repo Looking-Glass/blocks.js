@@ -54,9 +54,52 @@ await BlocksSpaAuth.init({ ... })
 const jwt = BlocksSpaAuth.getJWT()
 
 if (jwt) {
-  const blocksClient = new BlocksClient(jwt)
+  const blocksClient = new BlocksClient({ token: jwt })
   const resp = await blocksClient.me()
 
   console.log(resp.me.displayName)
 }
 ```
+
+### Uploading
+First you'll need to add a file picker to your page for users to upload. Something like:
+```tsx
+/** You can get the list of all accepted mime types by importing HOLOGRAM_QUILT_IMAGE_MIMETYPES */
+<input type="file" id="hologram" name="hologram" accept="image/png, image/jpeg" /> 
+```
+
+And here is a demo on how to automatically upload a file upon a user selecting a file.
+
+```tsx
+const filePicker = document.querySelector("#hologram") as HTMLFormElement
+
+filePicker.addEventListener("change", async (e) => {
+  let files = Array.from<File>(filePicker.files)
+
+  console.log("Uploading file", files[0])
+
+  const hologram = await blocksClient.uploadAndCreateQuiltHologram(files[0], {
+    title: "My test hologram",
+    isPublished: true,
+    privacy: PrivacyType.Unlisted,
+  })
+
+  if (hologram.createQuiltHologram.permalink) {
+    console.log("Success!", { hologram })
+
+    // Automatically open the newly uploaded hologram
+    window.open(hologram.createQuiltHologram.permalink)
+  }
+})
+```
+
+### Uploading via a blob/texture
+If you are generating textures, you can still use the same method `uploadAndCreateQuiltHologram`, you'll just need to instantiate the File from a blob. This is **untested** but something like:
+```ts
+const file = new File([blob], "filename.png");
+```
+
+## Resources
+
+- [API docs](https://gist.github.com/caseypugh/ae9b48e9f46bb398074ee98202cf58b3)
+- [GraphQL API Sandbox](https://blocks.glass/api/graphql)
