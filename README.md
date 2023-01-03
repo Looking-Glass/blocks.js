@@ -6,13 +6,13 @@ For any authenticated API calls, you will need a unique Client ID for your appli
  
 ## Installation
 
-Install the library. Since this is a private repo, you must use the direct git url.
+Install the library!
 
 ```sh
-npm install git+ssh://git@github.com:Looking-Glass/blocks.js.git
+npm install @lookingglass/blocks.js
 
 # or install with yarn
-yarn add git+ssh://git@github.com:Looking-Glass/blocks.js.git
+yarn add @lookingglass/blocks.js
 ```
 
 ## Getting started
