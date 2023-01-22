@@ -1,5 +1,4 @@
-import request, { RequestExtendedOptions, RequestOptions, Variables } from "graphql-request"
-import { BlocksSpaAuth } from "./auth"
+import { request, RequestExtendedOptions, RequestOptions, Variables } from "graphql-request"
 import {
 	CreateQuiltHologramDocument,
 	CreateQuiltHologramInputType,
@@ -9,7 +8,9 @@ import {
 	MeDocument,
 	MyHologramsDocument,
 } from "./gql/graphql"
-import { PresignedPost, UploadUrlResponse } from "./types"
+import { BlocksSpaAuth } from "./spa-auth"
+import { PresignedPost } from "./types"
+import fetch from "node-fetch"
 
 export const HOLOGRAM_QUILT_IMAGE_FORMATS = ["png", "jpg", "jpeg", "webp", "bmp"]
 export const HOLOGRAM_QUILT_IMAGE_MIMETYPES = HOLOGRAM_QUILT_IMAGE_FORMATS.map((f) => `image/${f}`)
@@ -90,18 +91,18 @@ export class BlocksClient {
 	}
 
 	/** Create a new hologram based upon an already uploaded S3 image URL */
-	public async createQuiltHologram(data: CreateQuiltHologramInputType) {
+	private async createHologram(data: CreateQuiltHologramInputType) {
 		return await this.api({
 			document: CreateQuiltHologramDocument,
 			variables: { data },
 		})
 	}
 
-	public async uploadAndCreateQuiltHologram(file: File, data: UploadAndCreateHologramArgs) {
+	public async uploadAndCreateHologram(file: File, data: UploadAndCreateHologramArgs) {
 		const imageSize = await this.getImageSizeFromFile(file)
 		const url = await this.uploadImage(file)
 
-		return await this.createQuiltHologram({
+		return await this.createHologram({
 			...data,
 			imageUrl: url,
 			width: imageSize.width,
@@ -110,7 +111,7 @@ export class BlocksClient {
 		})
 	}
 
-	public async uploadImage(file: File): Promise<string> {
+	private async uploadImage(file: File): Promise<string> {
 		const data = await this.getS3PresignedPost(file)
 		const formData = new FormData()
 
@@ -169,31 +170,11 @@ export class BlocksClient {
 		})
 
 		if (response.status == 200) {
-			return await response.json()
+			return (await response.json()) as PresignedPost
 		} else {
 			return { error: `Response failed ${response.status}` }
 		}
 	}
-
-	// private async getS3SignedUploadUrl(file: File): Promise<UploadUrlResponse> {
-	// 	const response = await fetch(this.args.apiUrl + "/api/upload", {
-	// 		method: "POST",
-	// 		body: JSON.stringify({
-	// 			file: file.name,
-	// 			uploadMode: "PUT",
-	// 		}),
-	// 		headers: {
-	// 			["Content-Type"]: "application/json",
-	// 			Authorization: `Bearer ${this.args.token}`,
-	// 		},
-	// 	})
-
-	// 	if (response.status == 200) {
-	// 		return await response.json()
-	// 	} else {
-	// 		return { error: `Response failed ${response.status}` }
-	// 	}
-	// }
 
 	/** Call the GraphQL API directly  */
 	public async api<T = any, V = Variables>(options: RequestOptions<V, T>): Promise<T> {

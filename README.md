@@ -15,62 +15,137 @@ npm install @lookingglass/blocks.js
 yarn add @lookingglass/blocks.js
 ```
 
-## Getting started
+## Authentication
+Blocks uses Auth0 under the hood for authentication. We provide some helpful wrappers around [`@auth0/auth0-spa-js`](https://github.com/auth0/auth0-spa-js) to make it easier to authenticate Blocks users. If you want to use another way to log a user in, you'll need to [reference the Auth0 docs](https://auth0.com/docs/authenticate/login/embedded-login).
 
-### Authentication
-Right now, the only authentication method we support in this plugin is via a SPA (single page application) approach. If you want to use another way to log a user in, you'll need to [reference the Auth0 docs](https://auth0.com/docs/authenticate/login/embedded-login).
-
-First you'll need to initialize `BlocksSpaAuth`:
+### React setup
+Here's an example approach of integrating user auth into a React app. First lets create an auth client that we can reuse throughout the app.
 
 ```ts
-// This must be called on every page load
-BlocksSpaAuth.init({
-  // The Client ID is provided by the Looking Glass team
-  clientId: "[The Auth0 Client ID for this application]"
-  // change to the base url for your project
-  redirectUri: "http://localhost:3000" 
+// lib/blocksAuthClient.ts
+import { createAuthClient } from "@lookingglass/blocks.js";
+
+export const blocksAuthClient = createAuthClient({
+  // Be sure to set BLOCKS_CLIENT_ID in your .env file
+  clientId: process.env.BLOCKS_CLIENT_ID ?? "",
 })
 ```
 
-`BlocksSpaAuth` will automatically search your page and bind click events to anchor tags with the following data attributes, `data-login` and `data-logout`. For example:
-```html
-<a href="#" data-login>Login</a>
-<a href="#" data-logout>Logout</a>
-```
+Then let's create a hook to check on login status of a user using the `validateSession` method:
 
-It will also automatically hide or show elements with the following data attribute:
-```html
-<!-- Will be visible when logged out -->
-<div data-logged-in>I am logged in</div>
-
-<!-- Will be visible when logged in -->
-<div data-logged-out>I am logged out</div>
-```
-
-Once the user logs in, they will be redirected back to your redirect page and will be signed in.
-
-### API calls
-Now let's put it all together.
 ```ts
-import { BlocksClient, BlocksSpaAuth } from "@lookingglass/blocks.js"
+// hooks/useBlocksAuth.ts
+import { useEffect, useState } from "react";
+import { validateSession } from "@lookingglass/blocks.js";
+import { blocksAuthClient } from "../lib/blocksAuthClient";
 
-await BlocksSpaAuth.init({ ... })
+export default function useBlocksAuth() {
+  const [token, setToken] = useState<string | null>(null);
 
-// Once the user is signed in, this will return a valid JSON web token
-// You can validate the JWT here: https://jwt.io/
-const jwt = BlocksSpaAuth.getJWT()
+  useEffect(() => {
+    validateSession(blocksAuthClient).then(setToken);
+  }, []);
 
-if (jwt) {
-  const blocksClient = new BlocksClient({ token: jwt })
-
-  // Fetches info about the logged-in user 
-  const resp = await blocksClient.me()
-
-  console.log(resp.me.displayName)
+  return {
+    token,
+    isLoggedIn: token !== null,
+  };
 }
 ```
 
-### Uploading
+Now let's create a login button for the user to click:
+
+```tsx
+// components/LoginButton.tsx
+import { loginWithRedirect } from "@lookingglass/blocks.js";
+import useBlocksAuth from "../hooks/useBlocksAuth";
+import { blocksAuthClient } from "../lib/blocksAuthClient";
+
+export default function LoginButton() {
+  const { isLoggedIn, token } = useBlocksAuth();
+
+  if (isLoggedIn) {
+    return <>Logged in!</>;
+  }
+
+  async function onLoginClick() {
+    // This will automatically redirect the user to sign in.
+    // The BASE_URL is what Auth0 will redirect to 
+    await loginWithRedirect(blocksAuthClient, process.env.BASE_URL);
+  }
+
+  return <button onClick={onLoginClick}>Login</button>;
+}
+```
+
+
+### API calls
+Now that we successfully can sign in a user, let's make an authenticated API call to the Blocks GraphQL API. 
+```tsx
+import Head from "next/head";
+import LoginButton from "./components/LoginButton";
+import useBlocksAuth from "./hooks/useBlocksAuth";
+import { useEffect, useState } from "react";
+import { BlocksClient } from "@lookingglass/blocks.js";
+
+export default function Home() {
+  const { isLoggedIn, token } = useBlocksAuth();
+  const [name, setName] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (isLoggedIn && token) {
+      const blocksClient = new BlocksClient({ token });
+
+      // Fetch info about the logged-in user
+      blocksClient.me().then((resp) => {
+        console.log(resp.me);
+        setName(resp.me?.displayName ?? null);
+      });
+    }
+  }, [isLoggedIn]);
+
+  return (
+  <>
+    <Head>
+      <title>Blocks API App</title>
+    </Head>
+    <main>
+      {name && <h1>Hello, {name}!</h1>}
+      <LoginButton />
+    </main>
+  </>
+  );
+}
+
+```
+
+## Available API calls
+```ts
+// Get information about the currently logged-in user
+me() 
+
+// Lookup information about a specific hologram
+hologram(id: number)
+
+// Fetch a list of all your uploaded holograms
+myHolograms(first: number) 
+
+// Upload a quilt to Blocks 
+uploadAndCreateHologram(file, data) 
+```
+
+blocks.js only supports a small handful of the GraphQL API calls. But you can still use this plugin to make a call to any GraphQL endpoint you'd like using the `api(...)` method.  
+
+```tsx
+await blocksClient.api({
+  document: `query{ me { username } }`,
+})
+```
+
+To see the full list of GraphQL queries and mutations, [visit our API  sandbox](https://blocks.glass/api/graphql).
+
+
+## How to upload a hologram
 First you'll need to add a file picker to your page for users to upload. Something like:
 ```tsx
 /** You can get the list of all accepted mime types by importing HOLOGRAM_QUILT_IMAGE_MIMETYPES */
@@ -110,18 +185,6 @@ If you are generating textures, you can still use the same method `uploadAndCrea
 ```ts
 const file = new File([blob], "filename.png");
 ```
-
-## TODOs
-blocks.js only supports a small handful of the GraphQL API calls. But you can still use this plugin to make a call to any GraphQL endpoint you'd like using `blocksClient.api(...)`. 
-
-```tsx
-await blocksClient.api({
-  document: `query{ me { username } }`,
-})
-```
-
-To see the full list of GraphQL queries and mutations, [visit our sandbox](https://blocks.glass/api/graphql).
-
 ## Contributions
 
 PRs and feedback welcome.

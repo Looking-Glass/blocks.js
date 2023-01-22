@@ -18,7 +18,7 @@ export default defineConfig({
 	},
 	build: {
 		manifest: true,
-		minify: true,
+		minify: false,
 		reportCompressedSize: true,
 		lib: {
 			entry: path.resolve(__dirname, "./src/main.ts"),
@@ -30,7 +30,10 @@ export default defineConfig({
 			external: (id) => !id.startsWith(".") && !path.isAbsolute(id),
 			output: {
 				globals: {
+					"@auth0/auth0-spa-js": "@auth0/auth0-spa-js",
+					graphql: "graphql",
 					"graphql-request": "graphql-request",
+					"node-fetch": "node-fetch",
 				},
 			},
 			plugins: [
