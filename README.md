@@ -1,8 +1,24 @@
-# Looking Glass Blocks API
+<h1>Looking Glass Blocks API</h1>
 
-`blocks.js` a simple node library that allows you to interact with the [Blocks](https://blocks.glass/) GraphQL API. 
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Authentication](#authentication)
+  - [React setup example](#react-setup-example)
+- [API](#api)
+  - [API docs](#api-docs)
+  - [Notes on GraphQL](#notes-on-graphql)
+- [Other examples](#other-examples)
+  - [How to upload a hologram](#how-to-upload-a-hologram)
+  - [Uploading via a blob/texture](#uploading-via-a-blobtexture)
+- [Contributions](#contributions)
+
+
+`blocks.js` a simple node library that allows you to interact with the [Blocks](https://blocks.glass/) GraphQL API. There are two main features:
+- **User auth**: Authorize with Blocks so you can make authenticated API calls.
+- **API**: Abstracts away the GraphQL API into simple methods.
+
 ## Requirements
-For any authenticated API calls, you will need a unique Client ID for your application. [Please fill out this form](https://forms.gle/MwhkzRMWRgky2JM36) if you are interested and we will reach out.
+For any authenticated GraphQL API calls, you will need a unique Client ID for your application. [Please fill out this form](https://forms.gle/MwhkzRMWRgky2JM36) if you are interested and we will reach out.
  
 ## Installation
 
@@ -18,7 +34,7 @@ yarn add @lookingglass/blocks.js
 ## Authentication
 Blocks uses Auth0 under the hood for authentication. We provide some helpful wrappers around [`@auth0/auth0-spa-js`](https://github.com/auth0/auth0-spa-js) to make it easier to authenticate Blocks users. If you want to use another way to log a user in, you'll need to [reference the Auth0 docs](https://auth0.com/docs/authenticate/login/embedded-login).
 
-### React setup
+### React setup example
 Here's an example approach of integrating user auth into a React app. First lets create an auth client that we can reuse throughout the app.
 
 ```ts
@@ -79,8 +95,10 @@ export default function LoginButton() {
 ```
 
 
-### API calls
+## API
 Now that we successfully can sign in a user, let's make an authenticated API call to the Blocks GraphQL API. 
+
+
 ```tsx
 import Head from "next/head";
 import LoginButton from "./components/LoginButton";
@@ -119,25 +137,18 @@ export default function Home() {
 
 ```
 
-## Available API calls
-```ts
-// Get information about the currently logged-in user
-me() 
+### API docs
+To see the full list of available metohds, visit the [**API docs**](docs/README.md).
 
-// Lookup information about a specific hologram
-hologram(id: number)
 
-// Fetch a list of all your uploaded holograms
-myHolograms(first: number) 
+### Notes on GraphQL
+blocks.js only supports a small handful of the GraphQL API calls at the moment. But you can still use blocks.js to make a call to any GraphQL endpoint you'd like using the `request(...)` method.  
 
-// Upload a quilt to Blocks 
-uploadAndCreateHologram(file, data) 
-```
-
-blocks.js only supports a small handful of the GraphQL API calls. But you can still use this plugin to make a call to any GraphQL endpoint you'd like using the `api(...)` method.  
+If you want more control over your requets we recommend just using one of the [existing GraphQL JS libs out there](https://graphql.org/code/#javascript). Under the hood, we use `graphql` and `graphql-request`.
 
 ```tsx
-await blocksClient.api({
+// Example on passing in your own graphql document 
+await blocksClient.request({
   document: `query{ me { username } }`,
 })
 ```
@@ -145,7 +156,8 @@ await blocksClient.api({
 To see the full list of GraphQL queries and mutations, [visit our API  sandbox](https://blocks.glass/api/graphql).
 
 
-## How to upload a hologram
+## Other examples
+### How to upload a hologram
 First you'll need to add a file picker to your page for users to upload. Something like:
 ```tsx
 /** You can get the list of all accepted mime types by importing HOLOGRAM_QUILT_IMAGE_MIMETYPES */

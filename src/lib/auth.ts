@@ -1,11 +1,20 @@
 import { Auth0Client, Auth0ClientOptions } from "@auth0/auth0-spa-js"
 
+/** @ignore */
 export const SESSION_KEY = "blocksToken"
 
 export type AuthClientOptions = Omit<Auth0ClientOptions, "domain"> & {
 	domain?: string
 }
 
+/**
+ * Create a new Auth0Client with default Blocks API configuration
+ * ```tsx
+ * const authClient = createAuthClient({
+ * 	clientId: "BLOCKS_CLIENT_ID_HERE",
+ * })
+ * ```
+ */
 export function createAuthClient(options: AuthClientOptions) {
 	return new Auth0Client({
 		...options,
@@ -17,7 +26,10 @@ export function createAuthClient(options: AuthClientOptions) {
 	})
 }
 
-export async function loginWithRedirect(authClient: Auth0Client, redirectUri: string = "/") {
+/**
+ *Redirects the user to the Auth0 login page. Use this to sign in users. When the user is redirected back to your app, you can use {@link validateSession} to validate the session.
+ */
+export async function loginWithRedirect(authClient: Auth0Client, redirectUri: string) {
 	return await authClient?.loginWithRedirect({
 		authorizationParams: {
 			redirect_uri: redirectUri,
@@ -25,6 +37,9 @@ export async function loginWithRedirect(authClient: Auth0Client, redirectUri: st
 	})
 }
 
+/**
+ * Validates the session with Auth0 and returns the token if it exists.
+ */
 export async function validateSession(authClient: Auth0Client): Promise<string | null> {
 	if (typeof window === "undefined") {
 		console.error("Blocks validateSession should only be called client side")
@@ -56,16 +71,20 @@ export async function validateSession(authClient: Auth0Client): Promise<string |
 			return token
 		}
 	} else if (isAuthenticated()) {
-		return getJWT()
+		return getToken()
 	}
 
 	return null
 }
 
+/** Returns if the user is logged in or not */
 export function isAuthenticated(): boolean {
-	return getJWT() != ""
+	return getToken() != ""
 }
 
-export function getJWT(): string {
+/** Returns the token from the session. This is just fetching it from cache.
+ * If you are wanting to validate a new sign in see {@link validateSession}
+ */
+export function getToken(): string {
 	return sessionStorage.getItem(SESSION_KEY) || ""
 }

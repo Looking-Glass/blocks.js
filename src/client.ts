@@ -1,4 +1,6 @@
-import { request, RequestExtendedOptions, RequestOptions, Variables } from "graphql-request"
+import { TypedQueryDocumentNode } from "graphql"
+import { RequestDocument, RequestExtendedOptions, RequestOptions, Variables, request } from "graphql-request"
+import fetch from "node-fetch"
 import {
 	CreateQuiltHologramDocument,
 	CreateQuiltHologramInputType,
@@ -8,57 +10,60 @@ import {
 	MeDocument,
 	MyHologramsDocument,
 } from "./gql/graphql"
-import { BlocksSpaAuth } from "./spa-auth"
 import { PresignedPost } from "./types"
-import fetch from "node-fetch"
 
 export const HOLOGRAM_QUILT_IMAGE_FORMATS = ["png", "jpg", "jpeg", "webp", "bmp"]
 export const HOLOGRAM_QUILT_IMAGE_MIMETYPES = HOLOGRAM_QUILT_IMAGE_FORMATS.map((f) => `image/${f}`)
 
-export interface BlocksClientArgs {
-	token: string
+export type BlocksClientArgs = {
+	/** The JWT token that's used to authenticate with the Blocks API */
+	token: string | null
 	/**
+	 * Change the API url if you're using a self-hosted version of Blocks
 	 * @default https://blocks.glass */
 	apiUrl?: string
-	/** @default https://blocks.glass/api/graphql */
-	graphqlApiUrl?: string
 }
 
-export type UploadAndCreateHologramArgs = Omit<
+type CreateHologramInputType = Omit<
 	CreateQuiltHologramInputType,
 	"width" | "height" | "imageUrl" | "fileSize"
 >
 
 const defaults: BlocksClientArgs = {
-	token: "",
+	token: null,
 	apiUrl: "https://blocks.glass",
-	graphqlApiUrl: "https://blocks.glass/api/graphql",
 }
 
 interface ImageSize {
 	width: number
 	height: number
 }
+
 export class BlocksClient {
-	private auth: BlocksSpaAuth | undefined
 	private args: BlocksClientArgs
 
-	/** Initialize the BlocksClient with a valid JWT */
+	/**
+	 * Initialize the BlocksClient with a valid JWT token. See {@link validateSession} for how to get a token.
+	 * ```ts
+	 * const blocksClient = new BlocksClient({
+	 *   token: "BLOCKS_API_TOKEN_HERE"
+	 * });
+	 * ```
+	 */
 	constructor(args: BlocksClientArgs) {
 		this.args = { ...defaults, ...args }
-		console.log(this.args)
 	}
 
-	/** Return info about the currently signed in user */
+	/** Get info about the currently signed in user. */
 	public async me() {
-		return await this.api({
+		return await this.request({
 			document: MeDocument,
 		})
 	}
 
-	/** Fetch a hologram */
+	/** Fetch an invididual hologram by id */
 	public async hologram(id: number) {
-		return await this.api({
+		return await this.request({
 			document: FindHologramDocument,
 			variables: {
 				id: id.toString(),
@@ -66,12 +71,13 @@ export class BlocksClient {
 		})
 	}
 
-	/** Fetch a playlist
+	/**
+	 * Fetch a playlist
 	 * @id The id of the playlist
 	 * @limit Number of total holograms you want to load in
 	 */
-	public async playlist(id: number, limit: number = 100): Promise<FindPlaylistQuery> {
-		return await this.api({
+	public async playlist(id: number, limit: number = 50): Promise<FindPlaylistQuery> {
+		return await this.request({
 			document: FindPlaylistDocument,
 			variables: {
 				id,
@@ -80,9 +86,9 @@ export class BlocksClient {
 		})
 	}
 
-	/** Fetch your public holograms */
-	public async myHolograms(first: number = 20) {
-		return await this.api({
+	/** Fetch all the holograms for the currently logged in user */
+	public async myHolograms(first: number = 50) {
+		return await this.request({
 			document: MyHologramsDocument,
 			variables: {
 				first,
@@ -92,13 +98,13 @@ export class BlocksClient {
 
 	/** Create a new hologram based upon an already uploaded S3 image URL */
 	private async createHologram(data: CreateQuiltHologramInputType) {
-		return await this.api({
+		return await this.request({
 			document: CreateQuiltHologramDocument,
 			variables: { data },
 		})
 	}
 
-	public async uploadAndCreateHologram(file: File, data: UploadAndCreateHologramArgs) {
+	public async uploadAndCreateHologram(file: File, data: CreateHologramInputType) {
 		const imageSize = await this.getImageSizeFromFile(file)
 		const url = await this.uploadImage(file)
 
@@ -176,12 +182,32 @@ export class BlocksClient {
 		}
 	}
 
-	/** Call the GraphQL API directly  */
-	public async api<T = any, V = Variables>(options: RequestOptions<V, T>): Promise<T> {
+	/**
+	 * Make an autheticated request to the Blocks GraphQL API. To see the full list of available GraphQL queries and mutations, [visit the API sandbox](https://blocks.glass/api/graphql).
+	 *
+	 * ```tsx
+	 * await blocksClient.api({
+	 * 	document: `query Me($first: Int) {
+	 * 		me {
+	 *			holograms(first: $first) {
+	 *				nodes {
+	 *					id
+	 *					title
+	 * 				}
+	 *			}
+	 *		}
+	 *	}`,
+	 * 	variables: {
+	 * 		first: 10
+	 * 	}
+	 * })
+	 * ```
+	 */
+	public async request<T = GraphqlDocument, V = Variables>(options: RequestOptions<V, T>): Promise<T> {
 		const test: RequestExtendedOptions = {
 			document: options.document,
 			variables: options?.variables as Variables,
-			url: this.args.graphqlApiUrl!,
+			url: this.args.apiUrl + "/api/graphql",
 			requestHeaders: {
 				Authorization: `Bearer ${this.args.token}`,
 			},
@@ -189,3 +215,5 @@ export class BlocksClient {
 		return await request(test)
 	}
 }
+
+export type GraphqlDocument = RequestDocument | TypedQueryDocumentNode<any, Variables> | string

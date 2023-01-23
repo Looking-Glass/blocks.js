@@ -49,9 +49,15 @@ async function updateUI() {
 	}
 }
 
+/**
+ * BlocksSpaAuth used for vanilla/non-react applications as a way to make it quick to integrate auth. It will automatically bind click events to anchor tags with the following data attributes
+ * @deprecated
+ */
 export class BlocksSpaAuth {
+	/** @ignore */
+	constructor() {}
+
 	/**
-	 * BlocksSpaAuth used for vanilla single page applications. It will automatically bind click events to anchor tags with the following data attributes
 	 * ```html
 	 * <a href="#" data-login>Login</a>
 	 * <a href="#" data-logout>Logout</a>
