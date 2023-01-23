@@ -59,11 +59,19 @@ ___
 
 • `Const` **HOLOGRAM\_QUILT\_IMAGE\_FORMATS**: `string`[]
 
+**`Default Value`**
+
+["png", "jpg", "jpeg", "webp", "bmp"]
+
 ___
 
 ### HOLOGRAM\_QUILT\_IMAGE\_MIMETYPES
 
 • `Const` **HOLOGRAM\_QUILT\_IMAGE\_MIMETYPES**: `string`[]
+
+**`Default Value`**
+
+["image/png", "image/jpg", "image/jpeg", "image/webp", "image/bmp"]
 
 ## Functions
 

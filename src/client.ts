@@ -12,7 +12,14 @@ import {
 } from "./gql/graphql"
 import { PresignedPost } from "./types"
 
+/**
+ * @defaultValue ["png", "jpg", "jpeg", "webp", "bmp"]
+ */
 export const HOLOGRAM_QUILT_IMAGE_FORMATS = ["png", "jpg", "jpeg", "webp", "bmp"]
+
+/**
+ * @defaultValue ["image/png", "image/jpg", "image/jpeg", "image/webp", "image/bmp"]
+ */
 export const HOLOGRAM_QUILT_IMAGE_MIMETYPES = HOLOGRAM_QUILT_IMAGE_FORMATS.map((f) => `image/${f}`)
 
 export type BlocksClientArgs = {
@@ -44,6 +51,7 @@ export class BlocksClient {
 
 	/**
 	 * Initialize the BlocksClient with a valid JWT token. See {@link validateSession} for how to get a token.
+	 * @example
 	 * ```ts
 	 * const blocksClient = new BlocksClient({
 	 *   token: "BLOCKS_API_TOKEN_HERE"

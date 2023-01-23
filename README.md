@@ -1,10 +1,17 @@
-<h1>Looking Glass Blocks API</h1>
+# Looking Glass Blocks API <!-- omit in toc -->
 
+
+`blocks.js` a simple node library that allows you to interact with the [Blocks](https://blocks.glass/) GraphQL API. There are two main features:
+- **User auth**: Authorize with Blocks so you can make authenticated API calls.
+- **API**: Abstracts away the GraphQL API into simple methods.
+
+## Table of contents <!-- omit in toc -->
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [Authentication](#authentication)
   - [React setup example](#react-setup-example)
 - [API](#api)
+  - [Making a request with React](#making-a-request-with-react)
   - [API docs](#api-docs)
   - [Notes on GraphQL](#notes-on-graphql)
 - [Other examples](#other-examples)
@@ -12,10 +19,6 @@
   - [Uploading via a blob/texture](#uploading-via-a-blobtexture)
 - [Contributions](#contributions)
 
-
-`blocks.js` a simple node library that allows you to interact with the [Blocks](https://blocks.glass/) GraphQL API. There are two main features:
-- **User auth**: Authorize with Blocks so you can make authenticated API calls.
-- **API**: Abstracts away the GraphQL API into simple methods.
 
 ## Requirements
 For any authenticated GraphQL API calls, you will need a unique Client ID for your application. [Please fill out this form](https://forms.gle/MwhkzRMWRgky2JM36) if you are interested and we will reach out.
@@ -96,6 +99,8 @@ export default function LoginButton() {
 
 
 ## API
+
+### Making a request with React
 Now that we successfully can sign in a user, let's make an authenticated API call to the Blocks GraphQL API. 
 
 

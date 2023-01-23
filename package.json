@@ -23,7 +23,7 @@
 		"build": "tsc && vite build && yarn typedoc",
 		"preview": "vite preview",
 		"codegen": "graphql-codegen --config codegen.ts",
-		"typedoc": "npx typedoc --plugin typedoc-plugin-markdown --out docs src/main.ts --exclude \"src/gql/*.ts\" --excludePrivate --readme none --disableSources ",
+		"typedoc": "npx typedoc --plugin typedoc-plugin-markdown --out docs src/main.ts --exclude \"src/gql/*.ts\" --excludePrivate --readme none --disableSources",
 		"typedoc:watch": "npx typedoc --plugin typedoc-plugin-markdown --out docs src/main.ts --exclude \"src/gql/*.ts\" --excludePrivate --readme none --disableSources --watch"
 	},
 	"devDependencies": {

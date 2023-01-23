@@ -24,6 +24,9 @@
 • **new BlocksClient**(`args`)
 
 Initialize the BlocksClient with a valid JWT token. See [validateSession](../README.md#validatesession) for how to get a token.
+
+**`Example`**
+
 ```ts
 const blocksClient = new BlocksClient({
   token: "BLOCKS_API_TOKEN_HERE"
