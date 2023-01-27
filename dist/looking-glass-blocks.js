@@ -1,206 +1,290 @@
-var f = Object.defineProperty;
-var b = (e, i, n) => i in e ? f(e, i, { enumerable: !0, configurable: !0, writable: !0, value: n }) : e[i] = n;
-var o = (e, i, n) => (b(e, typeof i != "symbol" ? i + "" : i, n), n);
-import { Auth0Client as w } from "@auth0/auth0-spa-js";
-import I from "graphql-request";
-const k = "blocksToken";
-let t, F;
-const m = () => document.querySelector("[data-login]"), s = () => document.querySelector("[data-logout]"), r = () => document.querySelectorAll("[data-logged-in]"), c = () => document.querySelectorAll("[data-logged-out]");
-function D() {
-  var e, i;
-  (e = m()) == null || e.addEventListener("click", async () => {
-    console.log("Logging in"), await (t == null ? void 0 : t.loginWithRedirect({
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
+import { request } from "graphql-request";
+import fetch from "node-fetch";
+import { Auth0Client } from "@auth0/auth0-spa-js";
+let redirectUri;
+const LoginBtn = () => document.querySelector("[data-login]");
+const LogoutBtn = () => document.querySelector("[data-logout]");
+const LoggedInEls = () => document.querySelectorAll("[data-logged-in]");
+const LoggedOutEls = () => document.querySelectorAll("[data-logged-out]");
+function bindListeners(authClient) {
+  var _a, _b;
+  (_a = LoginBtn()) == null ? void 0 : _a.addEventListener("click", async () => {
+    console.log("Logging in");
+    await (authClient == null ? void 0 : authClient.loginWithRedirect({
       authorizationParams: {
-        redirect_uri: F
+        redirect_uri: redirectUri
       }
     }));
-  }), (i = s()) == null || i.addEventListener("click", async () => {
-    console.log("Logging out"), sessionStorage.removeItem(k), h();
+  });
+  (_b = LogoutBtn()) == null ? void 0 : _b.addEventListener("click", async () => {
+    console.log("Logging out");
+    sessionStorage.removeItem(SESSION_KEY);
+    updateUI();
   });
 }
-async function A() {
-  const e = window.location.search;
-  if (e.includes("code=") && e.includes("state=") && t) {
-    try {
-      await t.handleRedirectCallback();
-    } catch (n) {
-      console.error(n);
-    }
-    if (await t.isAuthenticated()) {
-      const n = await t.getTokenSilently();
-      sessionStorage.setItem(k, n), window.history.replaceState({}, document.title, window.location.pathname);
-    }
+async function updateUI() {
+  if (isAuthenticated()) {
+    LoginBtn().style.display = "none";
+    LogoutBtn().style.display = "";
+    LoggedInEls().forEach((el) => {
+      el.style.display = "";
+    });
+    LoggedOutEls().forEach((el) => {
+      el.style.display = "none";
+    });
+  } else {
+    LoginBtn().style.display = "";
+    LogoutBtn().style.display = "none";
+    LoggedInEls().forEach((el) => {
+      el.style.display = "none";
+    });
+    LoggedOutEls().forEach((el) => {
+      el.style.display = "";
+    });
   }
 }
-async function h() {
-  u.isAuthenticated() ? (m().style.display = "none", s().style.display = "", r().forEach((e) => {
-    e.style.display = "";
-  }), c().forEach((e) => {
-    e.style.display = "none";
-  })) : (m().style.display = "", s().style.display = "none", r().forEach((e) => {
-    e.style.display = "none";
-  }), c().forEach((e) => {
-    e.style.display = "";
-  }));
-}
-class u {
-  static async init(i) {
-    D(), F = i.redirectUri, t = new w({
-      domain: i.domain || "blocks.us.auth0.com",
-      clientId: i.clientId,
-      authorizationParams: {
-        audience: "https://blocks.glass"
-      }
-    }), await A(), await h();
+class BlocksSpaAuth {
+  constructor() {
   }
-  static isAuthenticated() {
-    return u.getJWT() != "";
-  }
-  static getJWT() {
-    return sessionStorage.getItem(k) || "";
+  static async init(authClient) {
+    bindListeners(authClient);
+    await validateSession(authClient);
+    await updateUI();
   }
 }
-var v;
-(function(e) {
-  e.Quilt = "QUILT", e.Rgbd = "RGBD";
-})(v || (v = {}));
-var N;
-(function(e) {
-  e.OnlyMe = "ONLY_ME", e.Password = "PASSWORD", e.Public = "PUBLIC", e.Unlisted = "UNLISTED";
-})(N || (N = {}));
-var g;
-(function(e) {
-  e.All = "ALL", e.OnlyMe = "ONLY_ME", e.Password = "PASSWORD", e.Public = "PUBLIC", e.Unlisted = "UNLISTED";
-})(g || (g = {}));
-var S;
-(function(e) {
-  e.OnlyMe = "ONLY_ME", e.Public = "PUBLIC", e.Unlisted = "UNLISTED";
-})(S || (S = {}));
-var p;
-(function(e) {
-  e.Admin = "ADMIN", e.User = "USER";
-})(p || (p = {}));
-const L = { kind: "Document", definitions: [{ kind: "OperationDefinition", operation: "query", name: { kind: "Name", value: "FindHologram" }, variableDefinitions: [{ kind: "VariableDefinition", variable: { kind: "Variable", name: { kind: "Name", value: "id" } }, type: { kind: "NonNullType", type: { kind: "NamedType", name: { kind: "Name", value: "String" } } } }], selectionSet: { kind: "SelectionSet", selections: [{ kind: "Field", name: { kind: "Name", value: "hologramFindById" }, arguments: [{ kind: "Argument", name: { kind: "Name", value: "id" }, value: { kind: "Variable", name: { kind: "Name", value: "id" } } }], selectionSet: { kind: "SelectionSet", selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }, { kind: "Field", name: { kind: "Name", value: "title" } }, { kind: "Field", name: { kind: "Name", value: "aspectRatio" } }, { kind: "Field", name: { kind: "Name", value: "quiltCols" } }, { kind: "Field", name: { kind: "Name", value: "quiltRows" } }, { kind: "Field", name: { kind: "Name", value: "quiltTileCount" } }, { kind: "Field", name: { kind: "Name", value: "sourceImages" }, selectionSet: { kind: "SelectionSet", selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }, { kind: "Field", name: { kind: "Name", value: "url" } }, { kind: "Field", name: { kind: "Name", value: "width" } }, { kind: "Field", name: { kind: "Name", value: "height" } }, { kind: "Field", name: { kind: "Name", value: "type" } }, { kind: "Field", name: { kind: "Name", value: "fileSize" } }] } }] } }] } }] }, E = { kind: "Document", definitions: [{ kind: "OperationDefinition", operation: "query", name: { kind: "Name", value: "FindPlaylist" }, variableDefinitions: [{ kind: "VariableDefinition", variable: { kind: "Variable", name: { kind: "Name", value: "id" } }, type: { kind: "NamedType", name: { kind: "Name", value: "Int" } } }, { kind: "VariableDefinition", variable: { kind: "Variable", name: { kind: "Name", value: "lookup" } }, type: { kind: "NamedType", name: { kind: "Name", value: "String" } } }, { kind: "VariableDefinition", variable: { kind: "Variable", name: { kind: "Name", value: "first" } }, type: { kind: "NamedType", name: { kind: "Name", value: "Int" } }, defaultValue: { kind: "IntValue", value: "50" } }], selectionSet: { kind: "SelectionSet", selections: [{ kind: "Field", name: { kind: "Name", value: "playlist" }, arguments: [{ kind: "Argument", name: { kind: "Name", value: "id" }, value: { kind: "Variable", name: { kind: "Name", value: "id" } } }, { kind: "Argument", name: { kind: "Name", value: "lookup" }, value: { kind: "Variable", name: { kind: "Name", value: "lookup" } } }], selectionSet: { kind: "SelectionSet", selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }, { kind: "Field", name: { kind: "Name", value: "title" } }, { kind: "Field", name: { kind: "Name", value: "description" } }, { kind: "Field", name: { kind: "Name", value: "permalink" } }, { kind: "Field", name: { kind: "Name", value: "privacy" } }, { kind: "Field", name: { kind: "Name", value: "updatedAt" } }, { kind: "Field", name: { kind: "Name", value: "items" }, arguments: [{ kind: "Argument", name: { kind: "Name", value: "first" }, value: { kind: "Variable", name: { kind: "Name", value: "first" } } }], selectionSet: { kind: "SelectionSet", selections: [{ kind: "Field", name: { kind: "Name", value: "totalCount" } }, { kind: "Field", name: { kind: "Name", value: "pageInfo" }, selectionSet: { kind: "SelectionSet", selections: [{ kind: "Field", name: { kind: "Name", value: "hasNextPage" } }, { kind: "Field", name: { kind: "Name", value: "hasPreviousPage" } }, { kind: "Field", name: { kind: "Name", value: "startCursor" } }, { kind: "Field", name: { kind: "Name", value: "endCursor" } }] } }, { kind: "Field", name: { kind: "Name", value: "edges" }, selectionSet: { kind: "SelectionSet", selections: [{ kind: "Field", name: { kind: "Name", value: "node" }, selectionSet: { kind: "SelectionSet", selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }, { kind: "Field", name: { kind: "Name", value: "hologramId" } }, { kind: "Field", name: { kind: "Name", value: "position" } }, { kind: "Field", name: { kind: "Name", value: "hologram" }, selectionSet: { kind: "SelectionSet", selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }, { kind: "Field", name: { kind: "Name", value: "title" } }, { kind: "Field", name: { kind: "Name", value: "aspectRatio" } }, { kind: "Field", name: { kind: "Name", value: "quiltCols" } }, { kind: "Field", name: { kind: "Name", value: "quiltRows" } }, { kind: "Field", name: { kind: "Name", value: "quiltTileCount" } }, { kind: "Field", name: { kind: "Name", value: "sourceImages" }, selectionSet: { kind: "SelectionSet", selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }, { kind: "Field", name: { kind: "Name", value: "url" } }, { kind: "Field", name: { kind: "Name", value: "width" } }, { kind: "Field", name: { kind: "Name", value: "height" } }, { kind: "Field", name: { kind: "Name", value: "type" } }, { kind: "Field", name: { kind: "Name", value: "fileSize" } }] } }] } }] } }] } }] } }, { kind: "Field", name: { kind: "Name", value: "thumbnail" }, selectionSet: { kind: "SelectionSet", selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }, { kind: "Field", name: { kind: "Name", value: "url" } }, { kind: "Field", name: { kind: "Name", value: "width" } }, { kind: "Field", name: { kind: "Name", value: "height" } }, { kind: "Field", name: { kind: "Name", value: "type" } }] } }] } }] } }] }, U = { kind: "Document", definitions: [{ kind: "OperationDefinition", operation: "mutation", name: { kind: "Name", value: "CreateQuiltHologram" }, variableDefinitions: [{ kind: "VariableDefinition", variable: { kind: "Variable", name: { kind: "Name", value: "data" } }, type: { kind: "NamedType", name: { kind: "Name", value: "CreateQuiltHologramInputType" } } }], selectionSet: { kind: "SelectionSet", selections: [{ kind: "Field", name: { kind: "Name", value: "createQuiltHologram" }, arguments: [{ kind: "Argument", name: { kind: "Name", value: "data" }, value: { kind: "Variable", name: { kind: "Name", value: "data" } } }], selectionSet: { kind: "SelectionSet", selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }, { kind: "Field", name: { kind: "Name", value: "permalink" } }] } }] } }] }, O = { kind: "Document", definitions: [{ kind: "OperationDefinition", operation: "query", name: { kind: "Name", value: "Me" }, selectionSet: { kind: "SelectionSet", selections: [{ kind: "Field", name: { kind: "Name", value: "me" }, selectionSet: { kind: "SelectionSet", selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }, { kind: "Field", name: { kind: "Name", value: "username" } }, { kind: "Field", name: { kind: "Name", value: "displayName" } }, { kind: "Field", name: { kind: "Name", value: "email" } }, { kind: "Field", name: { kind: "Name", value: "picture" } }, { kind: "Field", name: { kind: "Name", value: "createdAt" } }] } }] } }] }, T = { kind: "Document", definitions: [{ kind: "OperationDefinition", operation: "query", name: { kind: "Name", value: "MyHolograms" }, variableDefinitions: [{ kind: "VariableDefinition", variable: { kind: "Variable", name: { kind: "Name", value: "first" } }, type: { kind: "NamedType", name: { kind: "Name", value: "Int" } }, defaultValue: { kind: "IntValue", value: "20" } }], selectionSet: { kind: "SelectionSet", selections: [{ kind: "Field", name: { kind: "Name", value: "me" }, selectionSet: { kind: "SelectionSet", selections: [{ kind: "Field", name: { kind: "Name", value: "username" } }, { kind: "Field", name: { kind: "Name", value: "displayName" } }, { kind: "Field", name: { kind: "Name", value: "holograms" }, arguments: [{ kind: "Argument", name: { kind: "Name", value: "first" }, value: { kind: "Variable", name: { kind: "Name", value: "first" } } }], selectionSet: { kind: "SelectionSet", selections: [{ kind: "Field", name: { kind: "Name", value: "nodes" }, selectionSet: { kind: "SelectionSet", selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }, { kind: "Field", name: { kind: "Name", value: "title" } }, { kind: "Field", name: { kind: "Name", value: "aspectRatio" } }, { kind: "Field", name: { kind: "Name", value: "quiltCols" } }, { kind: "Field", name: { kind: "Name", value: "quiltRows" } }, { kind: "Field", name: { kind: "Name", value: "quiltTileCount" } }, { kind: "Field", name: { kind: "Name", value: "sourceImages" }, selectionSet: { kind: "SelectionSet", selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }, { kind: "Field", name: { kind: "Name", value: "url" } }, { kind: "Field", name: { kind: "Name", value: "width" } }, { kind: "Field", name: { kind: "Name", value: "height" } }, { kind: "Field", name: { kind: "Name", value: "type" } }, { kind: "Field", name: { kind: "Name", value: "fileSize" } }] } }] } }] } }] } }] } }] }, q = ["png", "jpg", "jpeg", "webp", "bmp"], H = q.map((e) => `image/${e}`), V = {
-  token: "",
-  apiUrl: "https://blocks.glass",
-  graphqlApiUrl: "https://blocks.glass/api/graphql"
+var HologramType;
+(function(HologramType2) {
+  HologramType2["Quilt"] = "QUILT";
+  HologramType2["Rgbd"] = "RGBD";
+})(HologramType || (HologramType = {}));
+var PlaylistPrivacy;
+(function(PlaylistPrivacy2) {
+  PlaylistPrivacy2["OnlyMe"] = "ONLY_ME";
+  PlaylistPrivacy2["Password"] = "PASSWORD";
+  PlaylistPrivacy2["Public"] = "PUBLIC";
+  PlaylistPrivacy2["Unlisted"] = "UNLISTED";
+})(PlaylistPrivacy || (PlaylistPrivacy = {}));
+var PlaylistPrivacyFilter;
+(function(PlaylistPrivacyFilter2) {
+  PlaylistPrivacyFilter2["All"] = "ALL";
+  PlaylistPrivacyFilter2["OnlyMe"] = "ONLY_ME";
+  PlaylistPrivacyFilter2["Password"] = "PASSWORD";
+  PlaylistPrivacyFilter2["Public"] = "PUBLIC";
+  PlaylistPrivacyFilter2["Unlisted"] = "UNLISTED";
+})(PlaylistPrivacyFilter || (PlaylistPrivacyFilter = {}));
+var PrivacyType;
+(function(PrivacyType2) {
+  PrivacyType2["OnlyMe"] = "ONLY_ME";
+  PrivacyType2["Public"] = "PUBLIC";
+  PrivacyType2["Unlisted"] = "UNLISTED";
+})(PrivacyType || (PrivacyType = {}));
+var Role;
+(function(Role2) {
+  Role2["Admin"] = "ADMIN";
+  Role2["User"] = "USER";
+})(Role || (Role = {}));
+const FindHologramDocument = { "kind": "Document", "definitions": [{ "kind": "OperationDefinition", "operation": "query", "name": { "kind": "Name", "value": "FindHologram" }, "variableDefinitions": [{ "kind": "VariableDefinition", "variable": { "kind": "Variable", "name": { "kind": "Name", "value": "id" } }, "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "String" } } } }], "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "hologramFindById" }, "arguments": [{ "kind": "Argument", "name": { "kind": "Name", "value": "id" }, "value": { "kind": "Variable", "name": { "kind": "Name", "value": "id" } } }], "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "id" } }, { "kind": "Field", "name": { "kind": "Name", "value": "title" } }, { "kind": "Field", "name": { "kind": "Name", "value": "aspectRatio" } }, { "kind": "Field", "name": { "kind": "Name", "value": "quiltCols" } }, { "kind": "Field", "name": { "kind": "Name", "value": "quiltRows" } }, { "kind": "Field", "name": { "kind": "Name", "value": "quiltTileCount" } }, { "kind": "Field", "name": { "kind": "Name", "value": "sourceImages" }, "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "id" } }, { "kind": "Field", "name": { "kind": "Name", "value": "url" } }, { "kind": "Field", "name": { "kind": "Name", "value": "width" } }, { "kind": "Field", "name": { "kind": "Name", "value": "height" } }, { "kind": "Field", "name": { "kind": "Name", "value": "type" } }, { "kind": "Field", "name": { "kind": "Name", "value": "fileSize" } }] } }] } }] } }] };
+const FindPlaylistDocument = { "kind": "Document", "definitions": [{ "kind": "OperationDefinition", "operation": "query", "name": { "kind": "Name", "value": "FindPlaylist" }, "variableDefinitions": [{ "kind": "VariableDefinition", "variable": { "kind": "Variable", "name": { "kind": "Name", "value": "id" } }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Int" } } }, { "kind": "VariableDefinition", "variable": { "kind": "Variable", "name": { "kind": "Name", "value": "lookup" } }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "String" } } }, { "kind": "VariableDefinition", "variable": { "kind": "Variable", "name": { "kind": "Name", "value": "first" } }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Int" } }, "defaultValue": { "kind": "IntValue", "value": "50" } }], "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "playlist" }, "arguments": [{ "kind": "Argument", "name": { "kind": "Name", "value": "id" }, "value": { "kind": "Variable", "name": { "kind": "Name", "value": "id" } } }, { "kind": "Argument", "name": { "kind": "Name", "value": "lookup" }, "value": { "kind": "Variable", "name": { "kind": "Name", "value": "lookup" } } }], "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "id" } }, { "kind": "Field", "name": { "kind": "Name", "value": "title" } }, { "kind": "Field", "name": { "kind": "Name", "value": "description" } }, { "kind": "Field", "name": { "kind": "Name", "value": "permalink" } }, { "kind": "Field", "name": { "kind": "Name", "value": "privacy" } }, { "kind": "Field", "name": { "kind": "Name", "value": "updatedAt" } }, { "kind": "Field", "name": { "kind": "Name", "value": "items" }, "arguments": [{ "kind": "Argument", "name": { "kind": "Name", "value": "first" }, "value": { "kind": "Variable", "name": { "kind": "Name", "value": "first" } } }], "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "totalCount" } }, { "kind": "Field", "name": { "kind": "Name", "value": "pageInfo" }, "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "hasNextPage" } }, { "kind": "Field", "name": { "kind": "Name", "value": "hasPreviousPage" } }, { "kind": "Field", "name": { "kind": "Name", "value": "startCursor" } }, { "kind": "Field", "name": { "kind": "Name", "value": "endCursor" } }] } }, { "kind": "Field", "name": { "kind": "Name", "value": "edges" }, "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "node" }, "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "id" } }, { "kind": "Field", "name": { "kind": "Name", "value": "hologramId" } }, { "kind": "Field", "name": { "kind": "Name", "value": "position" } }, { "kind": "Field", "name": { "kind": "Name", "value": "hologram" }, "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "id" } }, { "kind": "Field", "name": { "kind": "Name", "value": "title" } }, { "kind": "Field", "name": { "kind": "Name", "value": "aspectRatio" } }, { "kind": "Field", "name": { "kind": "Name", "value": "quiltCols" } }, { "kind": "Field", "name": { "kind": "Name", "value": "quiltRows" } }, { "kind": "Field", "name": { "kind": "Name", "value": "quiltTileCount" } }, { "kind": "Field", "name": { "kind": "Name", "value": "sourceImages" }, "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "id" } }, { "kind": "Field", "name": { "kind": "Name", "value": "url" } }, { "kind": "Field", "name": { "kind": "Name", "value": "width" } }, { "kind": "Field", "name": { "kind": "Name", "value": "height" } }, { "kind": "Field", "name": { "kind": "Name", "value": "type" } }, { "kind": "Field", "name": { "kind": "Name", "value": "fileSize" } }] } }] } }] } }] } }] } }, { "kind": "Field", "name": { "kind": "Name", "value": "thumbnail" }, "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "id" } }, { "kind": "Field", "name": { "kind": "Name", "value": "url" } }, { "kind": "Field", "name": { "kind": "Name", "value": "width" } }, { "kind": "Field", "name": { "kind": "Name", "value": "height" } }, { "kind": "Field", "name": { "kind": "Name", "value": "type" } }] } }] } }] } }] };
+const CreateQuiltHologramDocument = { "kind": "Document", "definitions": [{ "kind": "OperationDefinition", "operation": "mutation", "name": { "kind": "Name", "value": "CreateQuiltHologram" }, "variableDefinitions": [{ "kind": "VariableDefinition", "variable": { "kind": "Variable", "name": { "kind": "Name", "value": "data" } }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "CreateQuiltHologramInputType" } } }], "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "createQuiltHologram" }, "arguments": [{ "kind": "Argument", "name": { "kind": "Name", "value": "data" }, "value": { "kind": "Variable", "name": { "kind": "Name", "value": "data" } } }], "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "id" } }, { "kind": "Field", "name": { "kind": "Name", "value": "permalink" } }] } }] } }] };
+const MeDocument = { "kind": "Document", "definitions": [{ "kind": "OperationDefinition", "operation": "query", "name": { "kind": "Name", "value": "Me" }, "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "me" }, "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "id" } }, { "kind": "Field", "name": { "kind": "Name", "value": "username" } }, { "kind": "Field", "name": { "kind": "Name", "value": "displayName" } }, { "kind": "Field", "name": { "kind": "Name", "value": "email" } }, { "kind": "Field", "name": { "kind": "Name", "value": "picture" } }, { "kind": "Field", "name": { "kind": "Name", "value": "createdAt" } }] } }] } }] };
+const MyHologramsDocument = { "kind": "Document", "definitions": [{ "kind": "OperationDefinition", "operation": "query", "name": { "kind": "Name", "value": "MyHolograms" }, "variableDefinitions": [{ "kind": "VariableDefinition", "variable": { "kind": "Variable", "name": { "kind": "Name", "value": "first" } }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Int" } }, "defaultValue": { "kind": "IntValue", "value": "20" } }], "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "me" }, "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "username" } }, { "kind": "Field", "name": { "kind": "Name", "value": "displayName" } }, { "kind": "Field", "name": { "kind": "Name", "value": "holograms" }, "arguments": [{ "kind": "Argument", "name": { "kind": "Name", "value": "first" }, "value": { "kind": "Variable", "name": { "kind": "Name", "value": "first" } } }], "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "nodes" }, "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "id" } }, { "kind": "Field", "name": { "kind": "Name", "value": "title" } }, { "kind": "Field", "name": { "kind": "Name", "value": "aspectRatio" } }, { "kind": "Field", "name": { "kind": "Name", "value": "quiltCols" } }, { "kind": "Field", "name": { "kind": "Name", "value": "quiltRows" } }, { "kind": "Field", "name": { "kind": "Name", "value": "quiltTileCount" } }, { "kind": "Field", "name": { "kind": "Name", "value": "sourceImages" }, "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "id" } }, { "kind": "Field", "name": { "kind": "Name", "value": "url" } }, { "kind": "Field", "name": { "kind": "Name", "value": "width" } }, { "kind": "Field", "name": { "kind": "Name", "value": "height" } }, { "kind": "Field", "name": { "kind": "Name", "value": "type" } }, { "kind": "Field", "name": { "kind": "Name", "value": "fileSize" } }] } }] } }] } }] } }] } }] };
+const HOLOGRAM_QUILT_IMAGE_FORMATS = ["png", "jpg", "jpeg", "webp", "bmp"];
+const HOLOGRAM_QUILT_IMAGE_MIMETYPES = HOLOGRAM_QUILT_IMAGE_FORMATS.map((f) => `image/${f}`);
+const defaults = {
+  token: null,
+  apiUrl: "https://blocks.glass"
 };
-class P {
-  constructor(i) {
-    o(this, "auth");
-    o(this, "args");
-    this.args = { ...V, ...i }, console.log(this.args);
+class BlocksClient {
+  constructor(args) {
+    __publicField(this, "args");
+    this.args = { ...defaults, ...args };
   }
   async me() {
-    return await this.api({
-      document: O
+    return await this.request({
+      document: MeDocument
     });
   }
-  async hologram(i) {
-    return await this.api({
-      document: L,
+  async hologram(id) {
+    return await this.request({
+      document: FindHologramDocument,
       variables: {
-        id: i.toString()
+        id: id.toString()
       }
     });
   }
-  async playlist(i, n = 100) {
-    return await this.api({
-      document: E,
+  async playlist(id, limit = 50) {
+    return await this.request({
+      document: FindPlaylistDocument,
       variables: {
-        id: i,
-        first: n
+        id,
+        first: limit
       }
     });
   }
-  async myHolograms(i = 20) {
-    return await this.api({
-      document: T,
+  async myHolograms(first = 50) {
+    return await this.request({
+      document: MyHologramsDocument,
       variables: {
-        first: i
+        first
       }
     });
   }
-  async createQuiltHologram(i) {
-    return await this.api({
-      document: U,
-      variables: { data: i }
+  async createHologram(data) {
+    return await this.request({
+      document: CreateQuiltHologramDocument,
+      variables: { data }
     });
   }
-  async uploadAndCreateQuiltHologram(i, n) {
-    const d = await this.getImageSizeFromFile(i), a = await this.uploadImage(i);
-    return await this.createQuiltHologram({
-      ...n,
-      imageUrl: a,
-      width: d.width,
-      height: d.height,
-      fileSize: i.size
+  async uploadAndCreateHologram(file, data) {
+    const imageSize = await this.getImageSizeFromFile(file);
+    const url = await this.uploadImage(file);
+    return await this.createHologram({
+      ...data,
+      imageUrl: url,
+      width: imageSize.width,
+      height: imageSize.height,
+      fileSize: file.size
     });
   }
-  async uploadImage(i) {
-    var a;
-    const n = await this.getS3PresignedPost(i), d = new FormData();
-    if (Object.entries({ ...n.fields, file: i }).forEach(([l, y]) => {
-      d.append(l, y);
-    }), n != null && n.url)
-      return await fetch(n.url, {
+  async uploadImage(file) {
+    var _a;
+    const data = await this.getS3PresignedPost(file);
+    const formData = new FormData();
+    Object.entries({ ...data.fields, file }).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+    if (data == null ? void 0 : data.url) {
+      await fetch(data.url, {
         method: "POST",
-        body: d
-      }), `${n.url}/${(a = n.fields) == null ? void 0 : a.key}`;
-    throw new Error(n.error);
+        body: formData
+      });
+      const imageUrl = `${data.url}/${(_a = data.fields) == null ? void 0 : _a.key}`;
+      return imageUrl;
+    } else {
+      throw new Error(data.error);
+    }
   }
-  async getImageSizeFromFile(i) {
-    return new Promise((n, d) => {
-      const a = document.createElement("img");
-      a.src = URL.createObjectURL(i), a.style.display = "none", a.addEventListener("load", async () => {
-        const l = {
-          width: a.naturalWidth,
-          height: a.naturalHeight
+  async getImageSizeFromFile(file) {
+    return new Promise((resolve, reject) => {
+      const img = document.createElement("img");
+      img.src = URL.createObjectURL(file);
+      img.style.display = "none";
+      img.addEventListener("load", async () => {
+        const size = {
+          width: img.naturalWidth,
+          height: img.naturalHeight
         };
-        document.body.removeChild(a), n(l);
-      }), a.addEventListener("error", () => {
-        d("Failed to get dimenisions from image");
-      }), document.body.appendChild(a);
+        document.body.removeChild(img);
+        resolve(size);
+      });
+      img.addEventListener("error", () => {
+        reject("Failed to get dimenisions from image");
+      });
+      document.body.appendChild(img);
     });
   }
-  async getS3PresignedPost(i) {
-    const n = await fetch(this.args.apiUrl + "/api/upload", {
+  async getS3PresignedPost(file) {
+    const response = await fetch(this.args.apiUrl + "/api/upload", {
       method: "POST",
       body: JSON.stringify({
-        file: i.name
+        file: file.name
       }),
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${this.args.token}`
       }
     });
-    return n.status == 200 ? await n.json() : { error: `Response failed ${n.status}` };
+    if (response.status == 200) {
+      return await response.json();
+    } else {
+      return { error: `Response failed ${response.status}` };
+    }
   }
-  async api(i) {
-    const n = {
-      document: i.document,
-      variables: i == null ? void 0 : i.variables,
-      url: this.args.graphqlApiUrl,
+  async request(options) {
+    const test = {
+      document: options.document,
+      variables: options == null ? void 0 : options.variables,
+      url: this.args.apiUrl + "/api/graphql",
       requestHeaders: {
         Authorization: `Bearer ${this.args.token}`
       }
     };
-    return await I(n);
+    return await request(test);
   }
 }
+const SESSION_KEY = "blocksToken";
+function createAuthClient(options) {
+  var _a, _b, _c, _d;
+  return new Auth0Client({
+    ...options,
+    domain: (_a = options.domain) != null ? _a : "blocks.us.auth0.com",
+    clientId: (_b = options.clientId) != null ? _b : "",
+    authorizationParams: {
+      audience: (_d = (_c = options.authorizationParams) == null ? void 0 : _c.audience) != null ? _d : "https://blocks.glass"
+    }
+  });
+}
+async function loginWithRedirect(authClient, redirectUri2) {
+  return await (authClient == null ? void 0 : authClient.loginWithRedirect({
+    authorizationParams: {
+      redirect_uri: redirectUri2
+    }
+  }));
+}
+async function validateSession(authClient) {
+  if (typeof window === "undefined") {
+    console.error("Blocks validateSession should only be called client side");
+    return null;
+  }
+  const query = window.location.search;
+  if (query.includes("code=") && query.includes("state=")) {
+    try {
+      await authClient.handleRedirectCallback();
+    } catch (e) {
+    }
+    const isAuthenticated2 = await authClient.isAuthenticated();
+    if (isAuthenticated2) {
+      const token = await authClient.getTokenSilently();
+      sessionStorage.setItem(SESSION_KEY, token);
+      window.history.replaceState({}, document.title, window.location.pathname);
+      return token;
+    }
+  } else if (isAuthenticated()) {
+    return getToken();
+  }
+  return null;
+}
+function isAuthenticated() {
+  return getToken() != "";
+}
+function getToken() {
+  return sessionStorage.getItem(SESSION_KEY) || "";
+}
 export {
-  P as BlocksClient,
-  u as BlocksSpaAuth,
-  U as CreateQuiltHologramDocument,
-  L as FindHologramDocument,
-  E as FindPlaylistDocument,
-  q as HOLOGRAM_QUILT_IMAGE_FORMATS,
-  H as HOLOGRAM_QUILT_IMAGE_MIMETYPES,
-  v as HologramType,
-  O as MeDocument,
-  T as MyHologramsDocument,
-  N as PlaylistPrivacy,
-  g as PlaylistPrivacyFilter,
-  S as PrivacyType,
-  p as Role
+  BlocksClient,
+  BlocksSpaAuth,
+  CreateQuiltHologramDocument,
+  FindHologramDocument,
+  FindPlaylistDocument,
+  HOLOGRAM_QUILT_IMAGE_FORMATS,
+  HOLOGRAM_QUILT_IMAGE_MIMETYPES,
+  HologramType,
+  MeDocument,
+  MyHologramsDocument,
+  PlaylistPrivacy,
+  PlaylistPrivacyFilter,
+  PrivacyType,
+  Role,
+  SESSION_KEY,
+  createAuthClient,
+  getToken,
+  isAuthenticated,
+  loginWithRedirect,
+  validateSession
 };
