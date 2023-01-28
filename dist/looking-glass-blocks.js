@@ -5,7 +5,7 @@ var __publicField = (obj, key, value) => {
   return value;
 };
 import { request } from "graphql-request";
-import fetch from "node-fetch";
+import fetch from "cross-fetch";
 import { Auth0Client } from "@auth0/auth0-spa-js";
 let redirectUri;
 const LoginBtn = () => document.querySelector("[data-login]");

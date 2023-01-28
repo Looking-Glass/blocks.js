@@ -5,7 +5,7 @@ var __publicField = (obj, key, value) => {
   return value;
 };
 (function(global, factory) {
-  typeof exports === "object" && typeof module !== "undefined" ? factory(exports, require("graphql-request"), require("node-fetch"), require("@auth0/auth0-spa-js")) : typeof define === "function" && define.amd ? define(["exports", "graphql-request", "node-fetch", "@auth0/auth0-spa-js"], factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, factory((global["@lookingglass/blocks"] = global["@lookingglass/blocks"] || {}, global["@lookingglass/blocks"].js = {}), global["graphql-request"], global["node-fetch"], global["@auth0/auth0-spa-js"]));
+  typeof exports === "object" && typeof module !== "undefined" ? factory(exports, require("graphql-request"), require("cross-fetch"), require("@auth0/auth0-spa-js")) : typeof define === "function" && define.amd ? define(["exports", "graphql-request", "cross-fetch", "@auth0/auth0-spa-js"], factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, factory((global["@lookingglass/blocks"] = global["@lookingglass/blocks"] || {}, global["@lookingglass/blocks"].js = {}), global["graphql-request"], global["cross-fetch"], global["@auth0/auth0-spa-js"]));
 })(this, function(exports2, graphqlRequest, fetch, auth0SpaJs) {
   "use strict";
   const _interopDefaultLegacy = (e) => e && typeof e === "object" && "default" in e ? e : { default: e };

@@ -33,7 +33,7 @@ export default defineConfig({
 					"@auth0/auth0-spa-js": "@auth0/auth0-spa-js",
 					graphql: "graphql",
 					"graphql-request": "graphql-request",
-					"node-fetch": "node-fetch",
+					"cross-fetch": "cross-fetch",
 				},
 			},
 			plugins: [

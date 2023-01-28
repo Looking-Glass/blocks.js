@@ -1,7 +1,13 @@
 import { TypedQueryDocumentNode } from "graphql";
 import { RequestDocument, RequestOptions, Variables } from "graphql-request";
 import { CreateQuiltHologramInputType, FindPlaylistQuery } from "./gql/graphql";
+/**
+ * @defaultValue ["png", "jpg", "jpeg", "webp", "bmp"]
+ */
 export declare const HOLOGRAM_QUILT_IMAGE_FORMATS: string[];
+/**
+ * @defaultValue ["image/png", "image/jpg", "image/jpeg", "image/webp", "image/bmp"]
+ */
 export declare const HOLOGRAM_QUILT_IMAGE_MIMETYPES: string[];
 export declare type BlocksClientArgs = {
     /** The JWT token that's used to authenticate with the Blocks API */
@@ -16,6 +22,7 @@ export declare class BlocksClient {
     private args;
     /**
      * Initialize the BlocksClient with a valid JWT token. See {@link validateSession} for how to get a token.
+     * @example
      * ```ts
      * const blocksClient = new BlocksClient({
      *   token: "BLOCKS_API_TOKEN_HERE"

@@ -1,6 +1,6 @@
 import { TypedQueryDocumentNode } from "graphql"
 import { RequestDocument, RequestExtendedOptions, RequestOptions, Variables, request } from "graphql-request"
-import fetch from "node-fetch"
+import fetch from "cross-fetch"
 import {
 	CreateQuiltHologramDocument,
 	CreateQuiltHologramInputType,
