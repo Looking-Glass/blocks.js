@@ -2,6 +2,7 @@ import { Auth0Client, Auth0ClientOptions } from "@auth0/auth0-spa-js"
 
 /** @ignore */
 export const SESSION_KEY = "blocksToken"
+const SESSION_EXPIRATION_DAYS = 30
 
 export type AuthClientOptions = Omit<Auth0ClientOptions, "domain"> & {
 	domain?: string
@@ -33,6 +34,7 @@ export async function loginWithRedirect(authClient: Auth0Client, redirectUri: st
 	return await authClient?.loginWithRedirect({
 		authorizationParams: {
 			redirect_uri: redirectUri,
+			max_age: 60 * 60 * 24 * SESSION_EXPIRATION_DAYS, // 30 days
 		},
 	})
 }
@@ -63,7 +65,7 @@ export async function validateSession(authClient: Auth0Client): Promise<string |
 		if (isAuthenticated) {
 			// use full if you need to make requests using an auth0 token
 			const token = await authClient.getTokenSilently()
-			sessionStorage.setItem(SESSION_KEY, token)
+			setCookie(SESSION_KEY, token, SESSION_EXPIRATION_DAYS)
 
 			// Use replaceState to redirect the user away and remove the querystring parameters
 			window.history.replaceState({}, document.title, window.location.pathname)
@@ -77,14 +79,39 @@ export async function validateSession(authClient: Auth0Client): Promise<string |
 	return null
 }
 
+/** Signs the user out */
+export async function logout(authClient: Auth0Client) {
+	setCookie(SESSION_KEY, "", -1)
+	await authClient.logout()
+}
+
 /** Returns if the user is logged in or not */
 export function isAuthenticated(): boolean {
 	return getToken() != ""
 }
 
-/** Returns the token from the session. This is just fetching it from cache.
+/**
+ * Returns the token from the session. This is just fetching it from cache.
  * If you are wanting to validate a new sign in see {@link validateSession}
  */
 export function getToken(): string {
-	return sessionStorage.getItem(SESSION_KEY) || ""
+	return getCookie(SESSION_KEY)
+}
+
+function setCookie(name: string, value: string, days: number): void {
+	const date = new Date()
+	date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000)
+	const expires = "; expires=" + date.toUTCString()
+	document.cookie = name + "=" + (value || "") + expires + "; path=/"
+}
+
+function getCookie(name: string): string {
+	const nameEQ = name + "="
+	const ca = document.cookie.split(";")
+	for (let i = 0; i < ca.length; i++) {
+		let c = ca[i]
+		while (c.charAt(0) === " ") c = c.substring(1, c.length)
+		if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length)
+	}
+	return ""
 }

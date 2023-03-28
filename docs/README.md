@@ -26,6 +26,7 @@
 - [getToken](README.md#gettoken)
 - [isAuthenticated](README.md#isauthenticated)
 - [loginWithRedirect](README.md#loginwithredirect)
+- [logout](README.md#logout)
 - [validateSession](README.md#validatesession)
 
 ## Type Aliases
@@ -135,6 +136,24 @@ Redirects the user to the Auth0 login page. Use this to sign in users. When the 
 | :------ | :------ |
 | `authClient` | `Auth0Client` |
 | `redirectUri` | `string` |
+
+#### Returns
+
+`Promise`<`void`\>
+
+___
+
+### logout
+
+▸ **logout**(`authClient`): `Promise`<`void`\>
+
+Signs the user out
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `authClient` | `Auth0Client` |
 
 #### Returns
 

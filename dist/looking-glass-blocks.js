@@ -219,6 +219,7 @@ class BlocksClient {
   }
 }
 const SESSION_KEY = "blocksToken";
+const SESSION_EXPIRATION_DAYS = 30;
 function createAuthClient(options) {
   var _a, _b, _c, _d;
   return new Auth0Client({
@@ -233,7 +234,8 @@ function createAuthClient(options) {
 async function loginWithRedirect(authClient, redirectUri2) {
   return await (authClient == null ? void 0 : authClient.loginWithRedirect({
     authorizationParams: {
-      redirect_uri: redirectUri2
+      redirect_uri: redirectUri2,
+      max_age: 60 * 60 * 24 * SESSION_EXPIRATION_DAYS
     }
   }));
 }
@@ -251,7 +253,7 @@ async function validateSession(authClient) {
     const isAuthenticated2 = await authClient.isAuthenticated();
     if (isAuthenticated2) {
       const token = await authClient.getTokenSilently();
-      sessionStorage.setItem(SESSION_KEY, token);
+      setCookie(SESSION_KEY, token, SESSION_EXPIRATION_DAYS);
       window.history.replaceState({}, document.title, window.location.pathname);
       return token;
     }
@@ -260,11 +262,33 @@ async function validateSession(authClient) {
   }
   return null;
 }
+async function logout(authClient) {
+  setCookie(SESSION_KEY, "", -1);
+  await authClient.logout();
+}
 function isAuthenticated() {
   return getToken() != "";
 }
 function getToken() {
-  return sessionStorage.getItem(SESSION_KEY) || "";
+  return getCookie(SESSION_KEY);
+}
+function setCookie(name, value, days) {
+  const date = new Date();
+  date.setTime(date.getTime() + days * 24 * 60 * 60 * 1e3);
+  const expires = "; expires=" + date.toUTCString();
+  document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}
+function getCookie(name) {
+  const nameEQ = name + "=";
+  const ca = document.cookie.split(";");
+  for (let i = 0; i < ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) === " ")
+      c = c.substring(1, c.length);
+    if (c.indexOf(nameEQ) === 0)
+      return c.substring(nameEQ.length, c.length);
+  }
+  return "";
 }
 export {
   BlocksClient,
@@ -286,5 +310,6 @@ export {
   getToken,
   isAuthenticated,
   loginWithRedirect,
+  logout,
   validateSession
 };

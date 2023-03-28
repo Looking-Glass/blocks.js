@@ -21,9 +21,12 @@ export declare function loginWithRedirect(authClient: Auth0Client, redirectUri: 
  * Validates the session with Auth0 and returns the token if it exists.
  */
 export declare function validateSession(authClient: Auth0Client): Promise<string | null>;
+/** Signs the user out */
+export declare function logout(authClient: Auth0Client): Promise<void>;
 /** Returns if the user is logged in or not */
 export declare function isAuthenticated(): boolean;
-/** Returns the token from the session. This is just fetching it from cache.
+/**
+ * Returns the token from the session. This is just fetching it from cache.
  * If you are wanting to validate a new sign in see {@link validateSession}
  */
 export declare function getToken(): string;
