@@ -2,13 +2,13 @@
 	"name": "@lookingglass/blocks.js",
 	"private": false,
 	"version": "0.2.0",
-	"module": "./dist/looking-glass-blocks.js",
-	"main": "./dist/looking-glass-blocks.umd.cjs",
+	"module": "./dist/looking-glass-blocks.mjs",
+	"main": "./dist/looking-glass-blocks.umd.js",
 	"types": "./dist/main.d.ts",
 	"exports": {
 		".": {
-			"import": "./dist/looking-glass-blocks.js",
-			"require": "./dist/looking-glass-blocks.umd.cjs"
+			"import": "./dist/looking-glass-blocks.mjs",
+			"require": "./dist/looking-glass-blocks.umd.js"
 		}
 	},
 	"files": [
