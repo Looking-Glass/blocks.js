@@ -1,0 +1,7 @@
+mutation UpdateHologram($data: UpdateHologramInput!) {
+	updateHologram(data: $data) {
+		id
+		title
+		permalink
+	}
+}

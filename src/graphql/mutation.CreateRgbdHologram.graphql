@@ -1,0 +1,6 @@
+mutation CreateRgbdHologram($data: CreateHologramFromImageInput!) {
+	createHologramFromImage(data: $data) {
+		id
+		permalink
+	}
+}

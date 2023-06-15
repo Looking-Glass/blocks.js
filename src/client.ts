@@ -2,13 +2,17 @@ import { TypedQueryDocumentNode } from "graphql"
 import { RequestDocument, RequestExtendedOptions, RequestOptions, Variables, request } from "graphql-request"
 import fetch from "cross-fetch"
 import {
+	CreateHologramFromImageInput,
 	CreateQuiltHologramDocument,
 	CreateQuiltHologramInputType,
+	CreateRgbdHologramDocument,
 	FindHologramDocument,
 	FindPlaylistDocument,
 	FindPlaylistQuery,
 	MeDocument,
 	MyHologramsDocument,
+	UpdateHologramDocument,
+	UpdateHologramInput,
 } from "./graphql/gql/types"
 import { PresignedPost } from "./types"
 
@@ -30,11 +34,6 @@ export type BlocksClientArgs = {
 	 * @default https://blocks.glass */
 	apiUrl?: string
 }
-
-type CreateHologramInputType = Omit<
-	CreateQuiltHologramInputType,
-	"width" | "height" | "imageUrl" | "fileSize"
->
 
 const defaults: BlocksClientArgs = {
 	token: null,
@@ -104,21 +103,33 @@ export class BlocksClient {
 		})
 	}
 
-	/** Create a new hologram based upon an already uploaded S3 image URL */
-	private async createHologram(data: CreateQuiltHologramInputType) {
+	/** Upload a Looking Glass quilt and create a new hologram for this account */
+	public async uploadAndCreateQuiltHologram(file: File, data: CreateQuiltHologramInputType) {
+		const url = await this.uploadImage(file)
+
 		return await this.request({
 			document: CreateQuiltHologramDocument,
 			variables: { data },
 		})
 	}
 
-	public async uploadAndCreateHologram(file: File, data: CreateHologramInputType) {
-		const imageSize = await this.getImageSizeFromFile(file)
+	/** Upload and convert a regular 2D image to a hologram for this account */
+	public async uploadAndCreateRgbdHologram(file: File, data: CreateHologramFromImageInput) {
 		const url = await this.uploadImage(file)
 
-		return await this.createHologram({
-			...data,
-			imageUrl: url,
+		return await this.request({
+			document: CreateRgbdHologramDocument,
+			variables: {
+				data,
+			},
+		})
+	}
+
+	/** Update a hologram */
+	public async updateHologram(data: UpdateHologramInput) {
+		return await this.request({
+			document: UpdateHologramDocument,
+			variables: { data },
 		})
 	}
 
@@ -141,30 +152,6 @@ export class BlocksClient {
 		} else {
 			throw new Error(data.error)
 		}
-	}
-
-	/** Load a image file into the page so we can get the dimensions */
-	private async getImageSizeFromFile(file: File): Promise<ImageSize> {
-		return new Promise<ImageSize>((resolve, reject) => {
-			const img = document.createElement("img")
-			img.src = URL.createObjectURL(file)
-			img.style.display = "none"
-			img.addEventListener("load", async () => {
-				const size = {
-					width: img.naturalWidth,
-					height: img.naturalHeight,
-				}
-
-				document.body.removeChild(img)
-				resolve(size)
-			})
-
-			img.addEventListener("error", () => {
-				reject("Failed to get dimenisions from image")
-			})
-
-			document.body.appendChild(img)
-		})
 	}
 
 	/** Get the form fields and target URL for direct POST uploading. */
