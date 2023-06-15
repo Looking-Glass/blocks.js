@@ -4,6 +4,13 @@
 
 ## Table of contents
 
+### Enumerations
+
+- [HologramType](enums/HologramType.md)
+- [ImageAssetKind](enums/ImageAssetKind.md)
+- [PlaylistPrivacy](enums/PlaylistPrivacy.md)
+- [PrivacyType](enums/PrivacyType.md)
+
 ### Classes
 
 - [BlocksClient](classes/BlocksClient.md)
@@ -13,7 +20,10 @@
 
 - [AuthClientOptions](README.md#authclientoptions)
 - [BlocksClientArgs](README.md#blocksclientargs)
+- [CreateHologramFromImageInput](README.md#createhologramfromimageinput)
+- [CreateQuiltHologramInputType](README.md#createquiltholograminputtype)
 - [GraphqlDocument](README.md#graphqldocument)
+- [UpdateHologramInput](README.md#updateholograminput)
 
 ### Variables
 
@@ -50,9 +60,74 @@ ___
 
 ___
 
+### CreateHologramFromImageInput
+
+Ƭ **CreateHologramFromImageInput**: `Object`
+
+The input arguments for the createHologram mutation.
+
+#### Type declaration
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `description?` | `InputMaybe`<`Scalars`[``"String"``][``"input"``]\> | - |
+| `imageUrl` | `Scalars`[``"String"``][``"input"``] | The public URL of the image to be converted to RGBD. |
+| `privacy?` | `InputMaybe`<[`PrivacyType`](enums/PrivacyType.md)\> | - |
+| `title?` | `InputMaybe`<`Scalars`[``"String"``][``"input"``]\> | - |
+
+___
+
+### CreateQuiltHologramInputType
+
+Ƭ **CreateQuiltHologramInputType**: `Object`
+
+The input arguments for the createQuiltHologram mutation.
+
+#### Type declaration
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `aspectRatio?` | `InputMaybe`<`Scalars`[``"Float"``][``"input"``]\> | - |
+| `description?` | `InputMaybe`<`Scalars`[``"String"``][``"input"``]\> | - |
+| `imageUrl` | `Scalars`[``"String"``][``"input"``] | The URL of the image |
+| `isPublished?` | `InputMaybe`<`Scalars`[``"Boolean"``][``"input"``]\> | - |
+| `privacy?` | `InputMaybe`<[`PrivacyType`](enums/PrivacyType.md)\> | Restricted |
+| `quiltCols?` | `InputMaybe`<`Scalars`[``"Int"``][``"input"``]\> | - |
+| `quiltRows?` | `InputMaybe`<`Scalars`[``"Int"``][``"input"``]\> | - |
+| `quiltTileCount?` | `InputMaybe`<`Scalars`[``"Int"``][``"input"``]\> | - |
+| `title?` | `InputMaybe`<`Scalars`[``"String"``][``"input"``]\> | - |
+
+___
+
 ### GraphqlDocument
 
 Ƭ **GraphqlDocument**: `RequestDocument` \| `TypedQueryDocumentNode`<`any`, `Variables`\> \| `string`
+
+___
+
+### UpdateHologramInput
+
+Ƭ **UpdateHologramInput**: `Object`
+
+The input arguments for the updateHologram mutation.
+
+#### Type declaration
+
+| Name | Type |
+| :------ | :------ |
+| `aspectRatio?` | `InputMaybe`<`Scalars`[``"Float"``][``"input"``]\> |
+| `description?` | `InputMaybe`<`Scalars`[``"String"``][``"input"``]\> |
+| `id` | `Scalars`[``"Int"``][``"input"``] |
+| `isPublished?` | `InputMaybe`<`Scalars`[``"Boolean"``][``"input"``]\> |
+| `privacy?` | `InputMaybe`<[`PrivacyType`](enums/PrivacyType.md)\> |
+| `quiltCols?` | `InputMaybe`<`Scalars`[``"Int"``][``"input"``]\> |
+| `quiltRows?` | `InputMaybe`<`Scalars`[``"Int"``][``"input"``]\> |
+| `quiltTileCount?` | `InputMaybe`<`Scalars`[``"Int"``][``"input"``]\> |
+| `rgbdDepthiness?` | `InputMaybe`<`Scalars`[``"Float"``][``"input"``]\> |
+| `rgbdFocus?` | `InputMaybe`<`Scalars`[``"Float"``][``"input"``]\> |
+| `rgbdStretch?` | `InputMaybe`<`Scalars`[``"Float"``][``"input"``]\> |
+| `rgbdZoom?` | `InputMaybe`<`Scalars`[``"Float"``][``"input"``]\> |
+| `title?` | `InputMaybe`<`Scalars`[``"String"``][``"input"``]\> |
 
 ## Variables
 
@@ -145,15 +220,16 @@ ___
 
 ### logout
 
-▸ **logout**(`authClient`): `Promise`<`void`\>
+▸ **logout**(`authClient`, `enableRedirect?`): `Promise`<`void`\>
 
 Signs the user out
 
 #### Parameters
 
-| Name | Type |
-| :------ | :------ |
-| `authClient` | `Auth0Client` |
+| Name | Type | Default value |
+| :------ | :------ | :------ |
+| `authClient` | `Auth0Client` | `undefined` |
+| `enableRedirect` | `boolean` | `true` |
 
 #### Returns
 

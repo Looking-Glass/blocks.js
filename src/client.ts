@@ -40,11 +40,6 @@ const defaults: BlocksClientArgs = {
 	apiUrl: "https://blocks.glass",
 }
 
-interface ImageSize {
-	width: number
-	height: number
-}
-
 export class BlocksClient {
 	private args: BlocksClientArgs
 
@@ -61,21 +56,25 @@ export class BlocksClient {
 		this.args = { ...defaults, ...args }
 	}
 
-	/** Get info about the currently signed in user. */
+	/** Fetch info about the currently signed in user. */
 	public async me() {
-		return await this.request({
-			document: MeDocument,
-		})
+		return (
+			await this.request({
+				document: MeDocument,
+			})
+		).me
 	}
 
 	/** Fetch an invididual hologram by id */
 	public async hologram(id: number) {
-		return await this.request({
-			document: FindHologramDocument,
-			variables: {
-				lookup: id.toString(),
-			},
-		})
+		return (
+			await this.request({
+				document: FindHologramDocument,
+				variables: {
+					lookup: id.toString(),
+				},
+			})
+		).hologram
 	}
 
 	/**
@@ -83,54 +82,66 @@ export class BlocksClient {
 	 * @id The id of the playlist
 	 * @limit Number of total holograms you want to load in
 	 */
-	public async playlist(id: number, limit: number = 50): Promise<FindPlaylistQuery> {
-		return await this.request({
-			document: FindPlaylistDocument,
-			variables: {
-				id,
-				first: limit,
-			},
-		})
+	public async playlist(id: number, limit: number = 50) {
+		return (
+			await this.request({
+				document: FindPlaylistDocument,
+				variables: {
+					id,
+					first: limit,
+				},
+			})
+		).playlist
 	}
 
 	/** Fetch all the holograms for the currently logged in user */
 	public async myHolograms(first: number = 50) {
-		return await this.request({
-			document: MyHologramsDocument,
-			variables: {
-				first,
-			},
-		})
+		return (
+			await this.request({
+				document: MyHologramsDocument,
+				variables: {
+					first,
+				},
+			})
+		).me
 	}
 
-	/** Upload a Looking Glass quilt and create a new hologram for this account */
-	public async uploadAndCreateQuiltHologram(file: File, data: CreateQuiltHologramInputType) {
+	/**
+	 * Upload a Looking Glass quilt and create a new hologram for this account
+	 * @param file The image file to upload
+	 * @param args The input data to create the hologram
+	 */
+	public async uploadAndCreateQuiltHologram(file: File, args: CreateQuiltHologramInputType) {
 		const url = await this.uploadImage(file)
 
-		return await this.request({
-			document: CreateQuiltHologramDocument,
-			variables: { data },
-		})
+		return (
+			await this.request({
+				document: CreateQuiltHologramDocument,
+				variables: { data: args },
+			})
+		).createQuiltHologram
 	}
 
 	/** Upload and convert a regular 2D image to a hologram for this account */
 	public async uploadAndCreateRgbdHologram(file: File, data: CreateHologramFromImageInput) {
 		const url = await this.uploadImage(file)
 
-		return await this.request({
-			document: CreateRgbdHologramDocument,
-			variables: {
-				data,
-			},
-		})
+		return (
+			await this.request({
+				document: CreateRgbdHologramDocument,
+				variables: { data },
+			})
+		).createHologramFromImage
 	}
 
 	/** Update a hologram */
 	public async updateHologram(data: UpdateHologramInput) {
-		return await this.request({
-			document: UpdateHologramDocument,
-			variables: { data },
-		})
+		return (
+			await this.request({
+				document: UpdateHologramDocument,
+				variables: { data },
+			})
+		).updateHologram
 	}
 
 	private async uploadImage(file: File): Promise<string> {
@@ -204,7 +215,7 @@ export class BlocksClient {
 				Authorization: `Bearer ${this.args.token}`,
 			},
 		}
-		return await request(test)
+		return (await request(test)) as T
 	}
 }
 

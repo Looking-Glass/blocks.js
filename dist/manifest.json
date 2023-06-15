@@ -1,6 +1,6 @@
 {
   "src/main.ts": {
-    "file": "looking-glass-blocks.umd.cjs",
+    "file": "looking-glass-blocks.umd.js",
     "src": "src/main.ts",
     "isEntry": true
   }

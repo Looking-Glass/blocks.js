@@ -2,7 +2,6 @@
 	"name": "@lookingglass/blocks.js",
 	"private": false,
 	"version": "0.2.0",
-	"type": "commonjs",
 	"module": "./dist/looking-glass-blocks.js",
 	"main": "./dist/looking-glass-blocks.umd.cjs",
 	"types": "./dist/main.d.ts",
@@ -22,7 +21,7 @@
 		"dev": "vite",
 		"build": "tsc && vite build && yarn typedoc",
 		"preview": "vite preview",
-		"codegen": "graphql-codegen --config codegen.ts",
+		"codegen": "graphql-codegen",
 		"typedoc": "npx typedoc --plugin typedoc-plugin-markdown --out docs src/main.ts --exclude \"src/gql/*.ts\" --excludePrivate --readme none --disableSources",
 		"typedoc:watch": "npx typedoc --plugin typedoc-plugin-markdown --out docs src/main.ts --exclude \"src/gql/*.ts\" --excludePrivate --readme none --disableSources --watch"
 	},

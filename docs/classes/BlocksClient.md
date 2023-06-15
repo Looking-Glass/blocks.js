@@ -15,7 +15,9 @@
 - [myHolograms](BlocksClient.md#myholograms)
 - [playlist](BlocksClient.md#playlist)
 - [request](BlocksClient.md#request)
-- [uploadAndCreateHologram](BlocksClient.md#uploadandcreatehologram)
+- [updateHologram](BlocksClient.md#updatehologram)
+- [uploadAndCreateQuiltHologram](BlocksClient.md#uploadandcreatequilthologram)
+- [uploadAndCreateRgbdHologram](BlocksClient.md#uploadandcreatergbdhologram)
 
 ## Constructors
 
@@ -43,7 +45,7 @@ const blocksClient = new BlocksClient({
 
 ### hologram
 
-▸ **hologram**(`id`): `Promise`<`FindHologramQuery`\>
+▸ **hologram**(`id`): `Promise`<`undefined` \| ``null`` \| { `__typename?`: ``"Hologram"`` ; `aspectRatio`: `number` ; `description?`: ``null`` \| `string` ; `id`: `number` ; `permalink`: `string` ; `previewGifAssets`: { `__typename?`: ``"ImageAsset"`` ; `height`: `number` ; `type`: `string` ; `url`: `string` ; `width`: `number`  }[] ; `previewVideoAssets`: { `__typename?`: ``"ImageAsset"`` ; `height`: `number` ; `type`: `string` ; `url`: `string` ; `width`: `number`  }[] ; `privacy`: [`PrivacyType`](../enums/PrivacyType.md) ; `quiltCols`: `number` ; `quiltRows`: `number` ; `quiltTileCount`: `number` ; `rgbdAssets?`: ``null`` \| { `__typename?`: ``"ImageAsset"`` ; `height`: `number` ; `kind`: [`ImageAssetKind`](../enums/ImageAssetKind.md) ; `type`: `string` ; `url`: `string` ; `width`: `number`  }[] ; `sourceImages`: { `__typename?`: ``"ImageAsset"`` ; `fileSize`: `number` ; `height`: `number` ; `id`: `number` ; `type`: `string` ; `url`: `string` ; `width`: `number`  }[] ; `thumbnail?`: ``null`` \| { `__typename?`: ``"ImageAsset"`` ; `height`: `number` ; `type`: `string` ; `url`: `string` ; `width`: `number`  } ; `title?`: ``null`` \| `string` ; `type`: [`HologramType`](../enums/HologramType.md) ; `user`: { `__typename?`: ``"User"`` ; `displayName`: `string` ; `id`: `number` ; `picture?`: ``null`` \| `string` ; `username`: `string`  }  }\>
 
 Fetch an invididual hologram by id
 
@@ -55,25 +57,25 @@ Fetch an invididual hologram by id
 
 #### Returns
 
-`Promise`<`FindHologramQuery`\>
+`Promise`<`undefined` \| ``null`` \| { `__typename?`: ``"Hologram"`` ; `aspectRatio`: `number` ; `description?`: ``null`` \| `string` ; `id`: `number` ; `permalink`: `string` ; `previewGifAssets`: { `__typename?`: ``"ImageAsset"`` ; `height`: `number` ; `type`: `string` ; `url`: `string` ; `width`: `number`  }[] ; `previewVideoAssets`: { `__typename?`: ``"ImageAsset"`` ; `height`: `number` ; `type`: `string` ; `url`: `string` ; `width`: `number`  }[] ; `privacy`: [`PrivacyType`](../enums/PrivacyType.md) ; `quiltCols`: `number` ; `quiltRows`: `number` ; `quiltTileCount`: `number` ; `rgbdAssets?`: ``null`` \| { `__typename?`: ``"ImageAsset"`` ; `height`: `number` ; `kind`: [`ImageAssetKind`](../enums/ImageAssetKind.md) ; `type`: `string` ; `url`: `string` ; `width`: `number`  }[] ; `sourceImages`: { `__typename?`: ``"ImageAsset"`` ; `fileSize`: `number` ; `height`: `number` ; `id`: `number` ; `type`: `string` ; `url`: `string` ; `width`: `number`  }[] ; `thumbnail?`: ``null`` \| { `__typename?`: ``"ImageAsset"`` ; `height`: `number` ; `type`: `string` ; `url`: `string` ; `width`: `number`  } ; `title?`: ``null`` \| `string` ; `type`: [`HologramType`](../enums/HologramType.md) ; `user`: { `__typename?`: ``"User"`` ; `displayName`: `string` ; `id`: `number` ; `picture?`: ``null`` \| `string` ; `username`: `string`  }  }\>
 
 ___
 
 ### me
 
-▸ **me**(): `Promise`<`MeQuery`\>
+▸ **me**(): `Promise`<`undefined` \| ``null`` \| { `__typename?`: ``"User"`` ; `createdAt`: `any` ; `displayName`: `string` ; `email?`: ``null`` \| `string` ; `id`: `number` ; `picture?`: ``null`` \| `string` ; `username`: `string`  }\>
 
-Get info about the currently signed in user.
+Fetch info about the currently signed in user.
 
 #### Returns
 
-`Promise`<`MeQuery`\>
+`Promise`<`undefined` \| ``null`` \| { `__typename?`: ``"User"`` ; `createdAt`: `any` ; `displayName`: `string` ; `email?`: ``null`` \| `string` ; `id`: `number` ; `picture?`: ``null`` \| `string` ; `username`: `string`  }\>
 
 ___
 
 ### myHolograms
 
-▸ **myHolograms**(`first?`): `Promise`<`MyHologramsQuery`\>
+▸ **myHolograms**(`first?`): `Promise`<`undefined` \| ``null`` \| { `__typename?`: ``"User"`` ; `displayName`: `string` ; `holograms?`: ``null`` \| { `__typename?`: ``"UserHolograms_Connection"`` ; `nodes?`: ``null`` \| (``null`` \| { `__typename?`: ``"Hologram"`` ; `aspectRatio`: `number` ; `description?`: ``null`` \| `string` ; `id`: `number` ; `permalink`: `string` ; `previewGifAssets`: { `__typename?`: ``"ImageAsset"`` ; `height`: `number` ; `type`: `string` ; `url`: `string` ; `width`: `number`  }[] ; `previewVideoAssets`: { `__typename?`: ``"ImageAsset"`` ; `height`: `number` ; `type`: `string` ; `url`: `string` ; `width`: `number`  }[] ; `privacy`: [`PrivacyType`](../enums/PrivacyType.md) ; `quiltCols`: `number` ; `quiltRows`: `number` ; `quiltTileCount`: `number` ; `rgbdAssets?`: ``null`` \| { `__typename?`: ``"ImageAsset"`` ; `height`: `number` ; `kind`: [`ImageAssetKind`](../enums/ImageAssetKind.md) ; `type`: `string` ; `url`: `string` ; `width`: `number`  }[] ; `sourceImages`: { `__typename?`: ``"ImageAsset"`` ; `fileSize`: `number` ; `height`: `number` ; `id`: `number` ; `type`: `string` ; `url`: `string` ; `width`: `number`  }[] ; `thumbnail?`: ``null`` \| { `__typename?`: ``"ImageAsset"`` ; `height`: `number` ; `type`: `string` ; `url`: `string` ; `width`: `number`  } ; `title?`: ``null`` \| `string` ; `type`: [`HologramType`](../enums/HologramType.md) ; `user`: { `__typename?`: ``"User"`` ; `displayName`: `string` ; `id`: `number` ; `picture?`: ``null`` \| `string` ; `username`: `string`  }  })[]  } ; `username`: `string`  }\>
 
 Fetch all the holograms for the currently logged in user
 
@@ -85,13 +87,13 @@ Fetch all the holograms for the currently logged in user
 
 #### Returns
 
-`Promise`<`MyHologramsQuery`\>
+`Promise`<`undefined` \| ``null`` \| { `__typename?`: ``"User"`` ; `displayName`: `string` ; `holograms?`: ``null`` \| { `__typename?`: ``"UserHolograms_Connection"`` ; `nodes?`: ``null`` \| (``null`` \| { `__typename?`: ``"Hologram"`` ; `aspectRatio`: `number` ; `description?`: ``null`` \| `string` ; `id`: `number` ; `permalink`: `string` ; `previewGifAssets`: { `__typename?`: ``"ImageAsset"`` ; `height`: `number` ; `type`: `string` ; `url`: `string` ; `width`: `number`  }[] ; `previewVideoAssets`: { `__typename?`: ``"ImageAsset"`` ; `height`: `number` ; `type`: `string` ; `url`: `string` ; `width`: `number`  }[] ; `privacy`: [`PrivacyType`](../enums/PrivacyType.md) ; `quiltCols`: `number` ; `quiltRows`: `number` ; `quiltTileCount`: `number` ; `rgbdAssets?`: ``null`` \| { `__typename?`: ``"ImageAsset"`` ; `height`: `number` ; `kind`: [`ImageAssetKind`](../enums/ImageAssetKind.md) ; `type`: `string` ; `url`: `string` ; `width`: `number`  }[] ; `sourceImages`: { `__typename?`: ``"ImageAsset"`` ; `fileSize`: `number` ; `height`: `number` ; `id`: `number` ; `type`: `string` ; `url`: `string` ; `width`: `number`  }[] ; `thumbnail?`: ``null`` \| { `__typename?`: ``"ImageAsset"`` ; `height`: `number` ; `type`: `string` ; `url`: `string` ; `width`: `number`  } ; `title?`: ``null`` \| `string` ; `type`: [`HologramType`](../enums/HologramType.md) ; `user`: { `__typename?`: ``"User"`` ; `displayName`: `string` ; `id`: `number` ; `picture?`: ``null`` \| `string` ; `username`: `string`  }  })[]  } ; `username`: `string`  }\>
 
 ___
 
 ### playlist
 
-▸ **playlist**(`id`, `limit?`): `Promise`<`FindPlaylistQuery`\>
+▸ **playlist**(`id`, `limit?`): `Promise`<`undefined` \| ``null`` \| { `__typename?`: ``"Playlist"`` ; `description?`: ``null`` \| `string` ; `id`: `number` ; `items?`: ``null`` \| { `__typename?`: ``"PlaylistItems_Connection"`` ; `edges?`: ``null`` \| (``null`` \| { `__typename?`: ``"PlaylistItemEdge"`` ; `node?`: ``null`` \| { `__typename?`: ``"PlaylistItem"`` ; `hologram`: { `__typename?`: ``"Hologram"`` ; `aspectRatio`: `number` ; `description?`: ``null`` \| `string` ; `id`: `number` ; `permalink`: `string` ; `previewGifAssets`: { `__typename?`: ``"ImageAsset"`` ; `height`: `number` ; `type`: `string` ; `url`: `string` ; `width`: `number`  }[] ; `previewVideoAssets`: { `__typename?`: ``"ImageAsset"`` ; `height`: `number` ; `type`: `string` ; `url`: `string` ; `width`: `number`  }[] ; `privacy`: [`PrivacyType`](../enums/PrivacyType.md) ; `quiltCols`: `number` ; `quiltRows`: `number` ; `quiltTileCount`: `number` ; `rgbdAssets?`: ``null`` \| { `__typename?`: ``"ImageAsset"`` ; `height`: `number` ; `kind`: [`ImageAssetKind`](../enums/ImageAssetKind.md) ; `type`: `string` ; `url`: `string` ; `width`: `number`  }[] ; `sourceImages`: { `__typename?`: ``"ImageAsset"`` ; `fileSize`: `number` ; `height`: `number` ; `id`: `number` ; `type`: `string` ; `url`: `string` ; `width`: `number`  }[] ; `thumbnail?`: ``null`` \| { `__typename?`: ``"ImageAsset"`` ; `height`: `number` ; `type`: `string` ; `url`: `string` ; `width`: `number`  } ; `title?`: ``null`` \| `string` ; `type`: [`HologramType`](../enums/HologramType.md) ; `user`: { `__typename?`: ``"User"`` ; `displayName`: `string` ; `id`: `number` ; `picture?`: ``null`` \| `string` ; `username`: `string`  }  } ; `hologramId`: `number` ; `id`: `number` ; `position?`: ``null`` \| `number`  }  })[] ; `pageInfo`: { `__typename?`: ``"PageInfo"`` ; `endCursor?`: ``null`` \| `string` ; `hasNextPage`: `boolean` ; `hasPreviousPage`: `boolean` ; `startCursor?`: ``null`` \| `string`  } ; `totalCount?`: ``null`` \| `number`  } ; `permalink`: `string` ; `privacy`: [`PlaylistPrivacy`](../enums/PlaylistPrivacy.md) ; `thumbnail?`: ``null`` \| { `__typename?`: ``"ImageAsset"`` ; `height`: `number` ; `id`: `number` ; `type`: `string` ; `url`: `string` ; `width`: `number`  } ; `title`: `string` ; `updatedAt`: `any`  }\>
 
 Fetch a playlist
 
@@ -112,7 +114,7 @@ Number of total holograms you want to load in
 
 #### Returns
 
-`Promise`<`FindPlaylistQuery`\>
+`Promise`<`undefined` \| ``null`` \| { `__typename?`: ``"Playlist"`` ; `description?`: ``null`` \| `string` ; `id`: `number` ; `items?`: ``null`` \| { `__typename?`: ``"PlaylistItems_Connection"`` ; `edges?`: ``null`` \| (``null`` \| { `__typename?`: ``"PlaylistItemEdge"`` ; `node?`: ``null`` \| { `__typename?`: ``"PlaylistItem"`` ; `hologram`: { `__typename?`: ``"Hologram"`` ; `aspectRatio`: `number` ; `description?`: ``null`` \| `string` ; `id`: `number` ; `permalink`: `string` ; `previewGifAssets`: { `__typename?`: ``"ImageAsset"`` ; `height`: `number` ; `type`: `string` ; `url`: `string` ; `width`: `number`  }[] ; `previewVideoAssets`: { `__typename?`: ``"ImageAsset"`` ; `height`: `number` ; `type`: `string` ; `url`: `string` ; `width`: `number`  }[] ; `privacy`: [`PrivacyType`](../enums/PrivacyType.md) ; `quiltCols`: `number` ; `quiltRows`: `number` ; `quiltTileCount`: `number` ; `rgbdAssets?`: ``null`` \| { `__typename?`: ``"ImageAsset"`` ; `height`: `number` ; `kind`: [`ImageAssetKind`](../enums/ImageAssetKind.md) ; `type`: `string` ; `url`: `string` ; `width`: `number`  }[] ; `sourceImages`: { `__typename?`: ``"ImageAsset"`` ; `fileSize`: `number` ; `height`: `number` ; `id`: `number` ; `type`: `string` ; `url`: `string` ; `width`: `number`  }[] ; `thumbnail?`: ``null`` \| { `__typename?`: ``"ImageAsset"`` ; `height`: `number` ; `type`: `string` ; `url`: `string` ; `width`: `number`  } ; `title?`: ``null`` \| `string` ; `type`: [`HologramType`](../enums/HologramType.md) ; `user`: { `__typename?`: ``"User"`` ; `displayName`: `string` ; `id`: `number` ; `picture?`: ``null`` \| `string` ; `username`: `string`  }  } ; `hologramId`: `number` ; `id`: `number` ; `position?`: ``null`` \| `number`  }  })[] ; `pageInfo`: { `__typename?`: ``"PageInfo"`` ; `endCursor?`: ``null`` \| `string` ; `hasNextPage`: `boolean` ; `hasPreviousPage`: `boolean` ; `startCursor?`: ``null`` \| `string`  } ; `totalCount?`: ``null`` \| `number`  } ; `permalink`: `string` ; `privacy`: [`PlaylistPrivacy`](../enums/PlaylistPrivacy.md) ; `thumbnail?`: ``null`` \| { `__typename?`: ``"ImageAsset"`` ; `height`: `number` ; `id`: `number` ; `type`: `string` ; `url`: `string` ; `width`: `number`  } ; `title`: `string` ; `updatedAt`: `any`  }\>
 
 ___
 
@@ -159,17 +161,56 @@ await blocksClient.api({
 
 ___
 
-### uploadAndCreateHologram
+### updateHologram
 
-▸ **uploadAndCreateHologram**(`file`, `data`): `Promise`<`CreateQuiltHologramMutation`\>
+▸ **updateHologram**(`data`): `Promise`<{ `__typename?`: ``"Hologram"`` ; `id`: `number` ; `permalink`: `string` ; `title?`: ``null`` \| `string`  }\>
+
+Update a hologram
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `data` | [`UpdateHologramInput`](../README.md#updateholograminput) |
+
+#### Returns
+
+`Promise`<{ `__typename?`: ``"Hologram"`` ; `id`: `number` ; `permalink`: `string` ; `title?`: ``null`` \| `string`  }\>
+
+___
+
+### uploadAndCreateQuiltHologram
+
+▸ **uploadAndCreateQuiltHologram**(`file`, `args`): `Promise`<{ `__typename?`: ``"Hologram"`` ; `id`: `number` ; `permalink`: `string`  }\>
+
+Upload a Looking Glass quilt and create a new hologram for this account
+
+#### Parameters
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `file` | `File` | The image file to upload |
+| `args` | [`CreateQuiltHologramInputType`](../README.md#createquiltholograminputtype) | The input data to create the hologram |
+
+#### Returns
+
+`Promise`<{ `__typename?`: ``"Hologram"`` ; `id`: `number` ; `permalink`: `string`  }\>
+
+___
+
+### uploadAndCreateRgbdHologram
+
+▸ **uploadAndCreateRgbdHologram**(`file`, `data`): `Promise`<{ `__typename?`: ``"Hologram"`` ; `id`: `number` ; `permalink`: `string`  }\>
+
+Upload and convert a regular 2D image to a hologram for this account
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
 | `file` | `File` |
-| `data` | `CreateHologramInputType` |
+| `data` | [`CreateHologramFromImageInput`](../README.md#createhologramfromimageinput) |
 
 #### Returns
 
-`Promise`<`CreateQuiltHologramMutation`\>
+`Promise`<{ `__typename?`: ``"Hologram"`` ; `id`: `number` ; `permalink`: `string`  }\>
