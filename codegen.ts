@@ -5,9 +5,8 @@ const config: CodegenConfig = {
 	schema: ["https://blocks.glass/api/graphql"],
 	documents: "src/**/!(*.d).{ts,tsx,graphql}",
 	generates: {
-		"src/gql/": {
-			preset: "client",
-			plugins: [],
+		"src/graphql/gql/types.ts": {
+			plugins: ["typescript", "typescript-operations", "typed-document-node", "typescript-resolvers"],
 		},
 	},
 }

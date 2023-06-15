@@ -9,7 +9,7 @@ import {
 	FindPlaylistQuery,
 	MeDocument,
 	MyHologramsDocument,
-} from "./gql/graphql"
+} from "./graphql/gql/types"
 import { PresignedPost } from "./types"
 
 /**
@@ -74,7 +74,7 @@ export class BlocksClient {
 		return await this.request({
 			document: FindHologramDocument,
 			variables: {
-				id: id.toString(),
+				lookup: id.toString(),
 			},
 		})
 	}
@@ -119,9 +119,6 @@ export class BlocksClient {
 		return await this.createHologram({
 			...data,
 			imageUrl: url,
-			width: imageSize.width,
-			height: imageSize.height,
-			fileSize: file.size,
 		})
 	}
 

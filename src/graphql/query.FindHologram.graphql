@@ -1,0 +1,5 @@
+query FindHologram($lookup: String!, $thumbnailWidth: Int = 500) {
+	hologram(lookup: $lookup) {
+		...HologramRoot
+	}
+}
