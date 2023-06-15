@@ -1,4 +1,4 @@
-query FindPlaylist($id: Int, $lookup: String, $first: Int = 50) {
+query FindPlaylist($id: Int, $lookup: String, $first: Int = 50, $thumbnailWidth: Int = 500) {
 	playlist(id: $id, lookup: $lookup) {
 		id
 		title
@@ -21,20 +21,7 @@ query FindPlaylist($id: Int, $lookup: String, $first: Int = 50) {
 					hologramId
 					position
 					hologram {
-						id
-						title
-						aspectRatio
-						quiltCols
-						quiltRows
-						quiltTileCount
-						sourceImages {
-							id
-							url
-							width
-							height
-							type
-							fileSize
-						}
+						...HologramRoot
 					}
 				}
 			}

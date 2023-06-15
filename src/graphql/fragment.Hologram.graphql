@@ -1,0 +1,51 @@
+fragment HologramRoot on Hologram {
+	id
+	title
+	description
+	permalink
+	aspectRatio
+	quiltCols
+	quiltRows
+	quiltTileCount
+	privacy
+	type
+	thumbnail(width: $thumbnailWidth) {
+		url
+		width
+		height
+		type
+	}
+	user {
+		id
+		username
+		displayName
+		picture
+	}
+	sourceImages {
+		id
+		url
+		width
+		height
+		type
+		fileSize
+	}
+	previewGifAssets {
+		url
+		width
+		height
+		type
+	}
+	previewVideoAssets {
+		url
+		width
+		height
+		type
+	}
+	rgbdAssets {
+		url
+		width
+		height
+		type
+		kind
+	}
+}

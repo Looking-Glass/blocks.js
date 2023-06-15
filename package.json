@@ -1,15 +1,14 @@
 {
 	"name": "@lookingglass/blocks.js",
 	"private": false,
-	"version": "0.1.4",
-	"type": "module",
-	"module": "./dist/looking-glass-blocks.js",
-	"main": "./dist/looking-glass-blocks.umd.cjs",
+	"version": "0.2.0",
+	"module": "./dist/looking-glass-blocks.mjs",
+	"main": "./dist/looking-glass-blocks.umd.js",
 	"types": "./dist/main.d.ts",
 	"exports": {
 		".": {
-			"import": "./dist/looking-glass-blocks.js",
-			"require": "./dist/looking-glass-blocks.umd.cjs"
+			"import": "./dist/looking-glass-blocks.mjs",
+			"require": "./dist/looking-glass-blocks.umd.js"
 		}
 	},
 	"files": [
@@ -22,7 +21,7 @@
 		"dev": "vite",
 		"build": "tsc && vite build && yarn typedoc",
 		"preview": "vite preview",
-		"codegen": "graphql-codegen --config codegen.ts",
+		"codegen": "graphql-codegen",
 		"typedoc": "npx typedoc --plugin typedoc-plugin-markdown --out docs src/main.ts --exclude \"src/gql/*.ts\" --excludePrivate --readme none --disableSources",
 		"typedoc:watch": "npx typedoc --plugin typedoc-plugin-markdown --out docs src/main.ts --exclude \"src/gql/*.ts\" --excludePrivate --readme none --disableSources --watch"
 	},
@@ -30,6 +29,10 @@
 		"@graphql-codegen/cli": "2.13.9",
 		"@graphql-codegen/client-preset": "1.1.3",
 		"@graphql-codegen/introspection": "2.2.1",
+		"@graphql-codegen/typed-document-node": "^5.0.0",
+		"@graphql-codegen/typescript": "^4.0.0",
+		"@graphql-codegen/typescript-operations": "^4.0.0",
+		"@graphql-codegen/typescript-resolvers": "^4.0.0",
 		"@rollup/plugin-typescript": "^9.0.2",
 		"express": "^4.18.2",
 		"rollup-plugin-typescript-paths": "^1.4.0",
