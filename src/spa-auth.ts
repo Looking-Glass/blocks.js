@@ -1,7 +1,5 @@
 import { Auth0Client } from "@auth0/auth0-spa-js"
-import { SESSION_KEY, createAuthClient, isAuthenticated, validateSession } from "./main"
-
-let redirectUri: string
+import { SESSION_KEY, createAuthClient, isAuthenticated, logout, validateSession } from "./main"
 
 const LoginBtn = () => document.querySelector<HTMLAnchorElement>("[data-login]")
 const LogoutBtn = () => document.querySelector<HTMLAnchorElement>("[data-logout]")
@@ -9,19 +7,19 @@ const LoggedInEls = () => document.querySelectorAll<HTMLElement>("[data-logged-i
 const LoggedOutEls = () => document.querySelectorAll<HTMLElement>("[data-logged-out]")
 
 function bindListeners(authClient: Auth0Client) {
-	LoginBtn()?.addEventListener("click", async () => {
-		console.log("Logging in")
+	LoginBtn()?.addEventListener("click", async (ev: MouseEvent) => {
+		const target = ev.target as HTMLDivElement
+		const redirect = target.dataset.redirect ?? window.location.href
 		await authClient?.loginWithRedirect({
 			authorizationParams: {
-				redirect_uri: redirectUri,
+				redirect_uri: redirect,
 			},
 		})
 	})
 
 	LogoutBtn()?.addEventListener("click", async () => {
-		console.log("Logging out")
-		sessionStorage.removeItem(SESSION_KEY)
-		updateUI()
+		await logout(authClient, false)
+		await updateUI()
 	})
 }
 

@@ -12,7 +12,7 @@
 		"noEmit": true,
 		"noImplicitAny": false,
 		"noUnusedLocals": false,
-		"noUnusedParameters": true,
+		"noUnusedParameters": false,
 		"noImplicitReturns": true,
 		"skipLibCheck": true
 	},

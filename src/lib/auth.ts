@@ -80,9 +80,11 @@ export async function validateSession(authClient: Auth0Client): Promise<string |
 }
 
 /** Signs the user out */
-export async function logout(authClient: Auth0Client) {
+export async function logout(authClient: Auth0Client, enableRedirect: boolean = true) {
 	setCookie(SESSION_KEY, "", -1)
-	await authClient.logout()
+	await authClient.logout({
+		onRedirect: enableRedirect ? undefined : async (url: string) => {},
+	})
 }
 
 /** Returns if the user is logged in or not */
