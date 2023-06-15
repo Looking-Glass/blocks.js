@@ -6,6 +6,7 @@ import {
 	CreateQuiltHologramDocument,
 	CreateQuiltHologramInputType,
 	CreateRgbdHologramDocument,
+	DeleteHologramDocument,
 	FindHologramDocument,
 	FindPlaylistDocument,
 	FindPlaylistQuery,
@@ -142,6 +143,16 @@ export class BlocksClient {
 				variables: { data },
 			})
 		).updateHologram
+	}
+
+	/** Delete a hologram */
+	public async deleteHologram(hologramId: number) {
+		return (
+			await this.request({
+				document: DeleteHologramDocument,
+				variables: { id: hologramId },
+			})
+		).deleteHologram
 	}
 
 	private async uploadImage(file: File): Promise<string> {

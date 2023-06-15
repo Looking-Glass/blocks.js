@@ -718,6 +718,16 @@ export declare type CreateRgbdHologramMutation = {
         permalink: string;
     };
 };
+export declare type DeleteHologramMutationVariables = Exact<{
+    id: Scalars['Int']['input'];
+}>;
+export declare type DeleteHologramMutation = {
+    __typename?: 'Mutation';
+    deleteHologram: {
+        __typename?: 'Hologram';
+        id: number;
+    };
+};
 export declare type UpdateHologramMutationVariables = Exact<{
     data: UpdateHologramInput;
 }>;
@@ -993,6 +1003,9 @@ export declare const CreateQuiltHologramDocument: DocumentNode<CreateQuiltHologr
 }>>;
 export declare const CreateRgbdHologramDocument: DocumentNode<CreateRgbdHologramMutation, Exact<{
     data: CreateHologramFromImageInput;
+}>>;
+export declare const DeleteHologramDocument: DocumentNode<DeleteHologramMutation, Exact<{
+    id: Scalars['Int']['input'];
 }>>;
 export declare const UpdateHologramDocument: DocumentNode<UpdateHologramMutation, Exact<{
     data: UpdateHologramInput;

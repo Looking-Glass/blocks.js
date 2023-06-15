@@ -10,6 +10,7 @@
 
 ### Methods
 
+- [deleteHologram](BlocksClient.md#deletehologram)
 - [hologram](BlocksClient.md#hologram)
 - [me](BlocksClient.md#me)
 - [myHolograms](BlocksClient.md#myholograms)
@@ -42,6 +43,24 @@ const blocksClient = new BlocksClient({
 | `args` | [`BlocksClientArgs`](../README.md#blocksclientargs) |
 
 ## Methods
+
+### deleteHologram
+
+▸ **deleteHologram**(`hologramId`): `Promise`<{ `__typename?`: ``"Hologram"`` ; `id`: `number`  }\>
+
+Delete a hologram
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `hologramId` | `number` |
+
+#### Returns
+
+`Promise`<{ `__typename?`: ``"Hologram"`` ; `id`: `number`  }\>
+
+___
 
 ### hologram
 

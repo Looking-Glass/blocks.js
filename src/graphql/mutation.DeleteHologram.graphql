@@ -1,0 +1,5 @@
+mutation DeleteHologram($id: Int!) {
+	deleteHologram(id: $id) {
+		id
+	}
+}

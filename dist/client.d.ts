@@ -288,6 +288,11 @@ export declare class BlocksClient {
         title?: string | null | undefined;
         permalink: string;
     }>;
+    /** Delete a hologram */
+    deleteHologram(hologramId: number): Promise<{
+        __typename?: "Hologram" | undefined;
+        id: number;
+    }>;
     private uploadImage;
     /** Get the form fields and target URL for direct POST uploading. */
     private getS3PresignedPost;
