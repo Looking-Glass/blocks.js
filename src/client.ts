@@ -1,5 +1,12 @@
 import { TypedQueryDocumentNode } from "graphql"
-import { RequestDocument, RequestExtendedOptions, RequestOptions, Variables, request } from "graphql-request"
+import {
+	RequestDocument,
+	RequestExtendedOptions,
+	RequestOptions,
+	Variables,
+	gql,
+	request,
+} from "graphql-request"
 import fetch from "cross-fetch"
 import {
 	CreateHologramFromImageInput,
@@ -14,6 +21,7 @@ import {
 	MyHologramsDocument,
 	UpdateHologramDocument,
 	UpdateHologramInput,
+	VerifySessionDocument,
 } from "./graphql/gql/types"
 import { PresignedPost } from "./types"
 
@@ -55,6 +63,13 @@ export class BlocksClient {
 	 */
 	constructor(args: BlocksClientArgs) {
 		this.args = { ...defaults, ...args }
+	}
+
+	/** Verify the current session is valid */
+	public async verifySession() {
+		return await this.request({
+			document: VerifySessionDocument,
+		})
 	}
 
 	/** Fetch info about the currently signed in user. */
@@ -112,25 +127,32 @@ export class BlocksClient {
 	 * @param file The image file to upload
 	 * @param args The input data to create the hologram
 	 */
-	public async uploadAndCreateQuiltHologram(file: File, args: CreateQuiltHologramInputType) {
-		const url = await this.uploadImage(file)
+	public async uploadAndCreateQuiltHologram(
+		file: File,
+		data: Omit<CreateQuiltHologramInputType, "imageUrl">
+	) {
+		const imageUrl = await this.uploadImage(file)
 
 		return (
 			await this.request({
 				document: CreateQuiltHologramDocument,
-				variables: { data: args },
+				variables: {
+					data: { ...data, imageUrl },
+				},
 			})
 		).createQuiltHologram
 	}
 
 	/** Upload and convert a regular 2D image to a hologram for this account */
-	public async uploadAndCreateRgbdHologram(file: File, data: CreateHologramFromImageInput) {
-		const url = await this.uploadImage(file)
+	public async uploadAndCreateRgbdHologram(file: File, data: Omit<CreateQuiltHologramInputType, "imageUrl">) {
+		const imageUrl = await this.uploadImage(file)
 
 		return (
 			await this.request({
 				document: CreateRgbdHologramDocument,
-				variables: { data },
+				variables: {
+					data: { ...data, imageUrl },
+				},
 			})
 		).createHologramFromImage
 	}

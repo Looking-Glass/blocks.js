@@ -24,6 +24,7 @@
 - [CreateQuiltHologramInputType](README.md#createquiltholograminputtype)
 - [GraphqlDocument](README.md#graphqldocument)
 - [UpdateHologramInput](README.md#updateholograminput)
+- [VerifySessionQuery](README.md#verifysessionquery)
 
 ### Variables
 
@@ -128,6 +129,19 @@ The input arguments for the updateHologram mutation.
 | `rgbdStretch?` | `InputMaybe`<`Scalars`[``"Float"``][``"input"``]\> |
 | `rgbdZoom?` | `InputMaybe`<`Scalars`[``"Float"``][``"input"``]\> |
 | `title?` | `InputMaybe`<`Scalars`[``"String"``][``"input"``]\> |
+
+___
+
+### VerifySessionQuery
+
+Ƭ **VerifySessionQuery**: `Object`
+
+#### Type declaration
+
+| Name | Type |
+| :------ | :------ |
+| `__typename?` | ``"Query"`` |
+| `me?` | { `__typename?`: ``"User"`` ; `displayName`: `string` ; `email?`: `string` \| ``null`` ; `id`: `number` ; `username`: `string`  } \| ``null`` |
 
 ## Variables
 

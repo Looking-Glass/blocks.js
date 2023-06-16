@@ -997,6 +997,19 @@ export declare type MyHologramsQuery = {
         } | null;
     } | null;
 };
+export declare type VerifySessionQueryVariables = Exact<{
+    [key: string]: never;
+}>;
+export declare type VerifySessionQuery = {
+    __typename?: 'Query';
+    me?: {
+        __typename?: 'User';
+        id: number;
+        username: string;
+        displayName: string;
+        email?: string | null;
+    } | null;
+};
 export declare const HologramRootFragmentDoc: DocumentNode<HologramRootFragment, unknown>;
 export declare const CreateQuiltHologramDocument: DocumentNode<CreateQuiltHologramMutation, Exact<{
     data?: InputMaybe<CreateQuiltHologramInputType> | undefined;
@@ -1026,6 +1039,9 @@ export declare const MeDocument: DocumentNode<MeQuery, Exact<{
 export declare const MyHologramsDocument: DocumentNode<MyHologramsQuery, Exact<{
     first?: InputMaybe<number> | undefined;
     thumbnailWidth?: InputMaybe<number> | undefined;
+}>>;
+export declare const VerifySessionDocument: DocumentNode<VerifySessionQuery, Exact<{
+    [key: string]: never;
 }>>;
 export declare type ResolverTypeWrapper<T> = Promise<T> | T;
 export declare type ResolverWithResolve<TResult, TParent, TContext, TArgs> = {

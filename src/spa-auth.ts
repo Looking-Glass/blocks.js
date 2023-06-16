@@ -1,5 +1,5 @@
 import { Auth0Client } from "@auth0/auth0-spa-js"
-import { SESSION_KEY, createAuthClient, isAuthenticated, logout, validateSession } from "./main"
+import { isAuthenticated, logout, validateSession } from "./main"
 
 const LoginBtn = () => document.querySelector<HTMLAnchorElement>("[data-login]")
 const LogoutBtn = () => document.querySelector<HTMLAnchorElement>("[data-logout]")
@@ -25,6 +25,9 @@ function bindListeners(authClient: Auth0Client) {
 
 async function updateUI() {
 	if (isAuthenticated()) {
+		document.body.classList.remove("logged-out")
+		document.body.classList.add("logged-in")
+
 		LoginBtn()!.style.display = "none"
 		LogoutBtn()!.style.display = ""
 
@@ -35,6 +38,9 @@ async function updateUI() {
 			el.style.display = "none"
 		})
 	} else {
+		document.body.classList.remove("logged-in")
+		document.body.classList.add("logged-out")
+
 		LoginBtn()!.style.display = ""
 		LogoutBtn()!.style.display = "none"
 
@@ -70,8 +76,8 @@ export class BlocksSpaAuth {
 	static async init(authClient: Auth0Client) {
 		bindListeners(authClient)
 
+		await updateUI()
 		await validateSession(authClient)
-
 		await updateUI()
 	}
 }

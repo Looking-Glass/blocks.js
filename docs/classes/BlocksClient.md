@@ -19,6 +19,7 @@
 - [updateHologram](BlocksClient.md#updatehologram)
 - [uploadAndCreateQuiltHologram](BlocksClient.md#uploadandcreatequilthologram)
 - [uploadAndCreateRgbdHologram](BlocksClient.md#uploadandcreatergbdhologram)
+- [verifySession](BlocksClient.md#verifysession)
 
 ## Constructors
 
@@ -200,7 +201,7 @@ ___
 
 ### uploadAndCreateQuiltHologram
 
-▸ **uploadAndCreateQuiltHologram**(`file`, `args`): `Promise`<{ `__typename?`: ``"Hologram"`` ; `id`: `number` ; `permalink`: `string`  }\>
+▸ **uploadAndCreateQuiltHologram**(`file`, `data`): `Promise`<{ `__typename?`: ``"Hologram"`` ; `id`: `number` ; `permalink`: `string`  }\>
 
 Upload a Looking Glass quilt and create a new hologram for this account
 
@@ -209,7 +210,7 @@ Upload a Looking Glass quilt and create a new hologram for this account
 | Name | Type | Description |
 | :------ | :------ | :------ |
 | `file` | `File` | The image file to upload |
-| `args` | [`CreateQuiltHologramInputType`](../README.md#createquiltholograminputtype) | The input data to create the hologram |
+| `data` | `Omit`<[`CreateQuiltHologramInputType`](../README.md#createquiltholograminputtype), ``"imageUrl"``\> | - |
 
 #### Returns
 
@@ -228,8 +229,20 @@ Upload and convert a regular 2D image to a hologram for this account
 | Name | Type |
 | :------ | :------ |
 | `file` | `File` |
-| `data` | [`CreateHologramFromImageInput`](../README.md#createhologramfromimageinput) |
+| `data` | `Omit`<[`CreateQuiltHologramInputType`](../README.md#createquiltholograminputtype), ``"imageUrl"``\> |
 
 #### Returns
 
 `Promise`<{ `__typename?`: ``"Hologram"`` ; `id`: `number` ; `permalink`: `string`  }\>
+
+___
+
+### verifySession
+
+▸ **verifySession**(): `Promise`<[`VerifySessionQuery`](../README.md#verifysessionquery)\>
+
+Verify the current session is valid
+
+#### Returns
+
+`Promise`<[`VerifySessionQuery`](../README.md#verifysessionquery)\>

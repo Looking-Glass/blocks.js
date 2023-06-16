@@ -1,12 +1,10 @@
 import { Auth0Client, Auth0ClientOptions } from "@auth0/auth0-spa-js"
 
-/** @ignore */
-export const SESSION_KEY = "blocksToken"
-const SESSION_EXPIRATION_DAYS = 30
-
 export type AuthClientOptions = Omit<Auth0ClientOptions, "domain"> & {
 	domain?: string
 }
+
+let USER_JWT = ""
 
 /**
  * Create a new Auth0Client with default Blocks API configuration
@@ -24,17 +22,17 @@ export function createAuthClient(options: AuthClientOptions) {
 		authorizationParams: {
 			audience: options.authorizationParams?.audience ?? "https://blocks.glass",
 		},
+		sessionCheckExpiryDays: 30,
 	})
 }
 
 /**
- *Redirects the user to the Auth0 login page. Use this to sign in users. When the user is redirected back to your app, you can use {@link validateSession} to validate the session.
+ * Redirects the user to the Auth0 login page. Use this to sign in users. When the user is redirected back to your app, you can use {@link validateSession} to validate the session.
  */
 export async function loginWithRedirect(authClient: Auth0Client, redirectUri: string) {
 	return await authClient?.loginWithRedirect({
 		authorizationParams: {
 			redirect_uri: redirectUri,
-			max_age: 60 * 60 * 24 * SESSION_EXPIRATION_DAYS, // 30 days
 		},
 	})
 }
@@ -64,15 +62,21 @@ export async function validateSession(authClient: Auth0Client): Promise<string |
 
 		if (isAuthenticated) {
 			// use full if you need to make requests using an auth0 token
-			const token = await authClient.getTokenSilently()
-			setCookie(SESSION_KEY, token, SESSION_EXPIRATION_DAYS)
+			USER_JWT = await authClient.getTokenSilently()
 
 			// Use replaceState to redirect the user away and remove the querystring parameters
 			window.history.replaceState({}, document.title, window.location.pathname)
 
-			return token
+			return USER_JWT
 		}
-	} else if (isAuthenticated()) {
+	} else {
+		try {
+			USER_JWT = await authClient.getTokenSilently()
+		} catch (e) {
+			// console.log("User not signed in")
+			USER_JWT = ""
+		}
+
 		return getToken()
 	}
 
@@ -81,7 +85,6 @@ export async function validateSession(authClient: Auth0Client): Promise<string |
 
 /** Signs the user out */
 export async function logout(authClient: Auth0Client, enableRedirect: boolean = true) {
-	setCookie(SESSION_KEY, "", -1)
 	await authClient.logout({
 		onRedirect: enableRedirect ? undefined : async (url: string) => {},
 	})
@@ -97,7 +100,7 @@ export function isAuthenticated(): boolean {
  * If you are wanting to validate a new sign in see {@link validateSession}
  */
 export function getToken(): string {
-	return getCookie(SESSION_KEY)
+	return USER_JWT
 }
 
 function setCookie(name: string, value: string, days: number): void {

@@ -1,6 +1,6 @@
 import { TypedQueryDocumentNode } from "graphql";
 import { RequestDocument, RequestOptions, Variables } from "graphql-request";
-import { CreateHologramFromImageInput, CreateQuiltHologramInputType, UpdateHologramInput } from "./graphql/gql/types";
+import { CreateQuiltHologramInputType, UpdateHologramInput } from "./graphql/gql/types";
 /**
  * @defaultValue ["png", "jpg", "jpeg", "webp", "bmp"]
  */
@@ -29,6 +29,8 @@ export declare class BlocksClient {
      * ```
      */
     constructor(args: BlocksClientArgs);
+    /** Verify the current session is valid */
+    verifySession(): Promise<import("./graphql/gql/types").VerifySessionQuery>;
     /** Fetch info about the currently signed in user. */
     me(): Promise<{
         __typename?: "User" | undefined;
@@ -270,13 +272,13 @@ export declare class BlocksClient {
      * @param file The image file to upload
      * @param args The input data to create the hologram
      */
-    uploadAndCreateQuiltHologram(file: File, args: CreateQuiltHologramInputType): Promise<{
+    uploadAndCreateQuiltHologram(file: File, data: Omit<CreateQuiltHologramInputType, "imageUrl">): Promise<{
         __typename?: "Hologram" | undefined;
         id: number;
         permalink: string;
     }>;
     /** Upload and convert a regular 2D image to a hologram for this account */
-    uploadAndCreateRgbdHologram(file: File, data: CreateHologramFromImageInput): Promise<{
+    uploadAndCreateRgbdHologram(file: File, data: Omit<CreateQuiltHologramInputType, "imageUrl">): Promise<{
         __typename?: "Hologram" | undefined;
         id: number;
         permalink: string;

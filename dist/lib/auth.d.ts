@@ -1,6 +1,4 @@
 import { Auth0Client, Auth0ClientOptions } from "@auth0/auth0-spa-js";
-/** @ignore */
-export declare const SESSION_KEY = "blocksToken";
 export declare type AuthClientOptions = Omit<Auth0ClientOptions, "domain"> & {
     domain?: string;
 };
@@ -14,7 +12,7 @@ export declare type AuthClientOptions = Omit<Auth0ClientOptions, "domain"> & {
  */
 export declare function createAuthClient(options: AuthClientOptions): Auth0Client;
 /**
- *Redirects the user to the Auth0 login page. Use this to sign in users. When the user is redirected back to your app, you can use {@link validateSession} to validate the session.
+ * Redirects the user to the Auth0 login page. Use this to sign in users. When the user is redirected back to your app, you can use {@link validateSession} to validate the session.
  */
 export declare function loginWithRedirect(authClient: Auth0Client, redirectUri: string): Promise<void>;
 /**

@@ -1,0 +1,8 @@
+query VerifySession {
+	me {
+		id
+		username
+		displayName
+		email
+	}
+}

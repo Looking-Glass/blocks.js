@@ -9,4 +9,5 @@ export {
 	UpdateHologramInput,
 	CreateQuiltHologramInputType,
 	CreateHologramFromImageInput,
+	VerifySessionQuery,
 } from "./graphql/gql/types"

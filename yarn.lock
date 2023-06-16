@@ -40,10 +40,10 @@
   dependencies:
     node-fetch "^2.6.1"
 
-"@auth0/auth0-spa-js@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@auth0/auth0-spa-js/-/auth0-spa-js-2.0.0.tgz#6b53499fa27a49716492f3375fd0bd6db2497a13"
-  integrity sha512-qHArgvA+ltI37g1vo3q7XtWxhMNAyL0LrnwCKCHQ1uzMWnxhdyxi2w9/BXfp1c+2L1Zc+DDh3XhpbYVXNhvadg==
+"@auth0/auth0-spa-js@^2.0.8":
+  version "2.0.8"
+  resolved "https://registry.yarnpkg.com/@auth0/auth0-spa-js/-/auth0-spa-js-2.0.8.tgz#42a8e5aad043e66dbba2a8fadc086a46bf0d021f"
+  integrity sha512-qCgWZS58S69WCg2ybd+SDiaw3ahBVJ4/tSFWMtIpc//Fq8kRHGwMOmgpNKVAFrpHG0ck2oWFGrpylxoto8Z0mA==
 
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.18.6":
   version "7.18.6"

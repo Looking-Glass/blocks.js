@@ -33,6 +33,8 @@ var __publicField = (obj, key, value) => {
   }
   async function updateUI() {
     if (isAuthenticated()) {
+      document.body.classList.remove("logged-out");
+      document.body.classList.add("logged-in");
       LoginBtn().style.display = "none";
       LogoutBtn().style.display = "";
       LoggedInEls().forEach((el) => {
@@ -42,6 +44,8 @@ var __publicField = (obj, key, value) => {
         el.style.display = "none";
       });
     } else {
+      document.body.classList.remove("logged-in");
+      document.body.classList.add("logged-out");
       LoginBtn().style.display = "";
       LogoutBtn().style.display = "none";
       LoggedInEls().forEach((el) => {
@@ -57,6 +61,7 @@ var __publicField = (obj, key, value) => {
     }
     static async init(authClient) {
       bindListeners(authClient);
+      await updateUI();
       await validateSession(authClient);
       await updateUI();
     }
@@ -109,6 +114,7 @@ var __publicField = (obj, key, value) => {
   const FindPlaylistDocument = { "kind": "Document", "definitions": [{ "kind": "OperationDefinition", "operation": "query", "name": { "kind": "Name", "value": "FindPlaylist" }, "variableDefinitions": [{ "kind": "VariableDefinition", "variable": { "kind": "Variable", "name": { "kind": "Name", "value": "id" } }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Int" } } }, { "kind": "VariableDefinition", "variable": { "kind": "Variable", "name": { "kind": "Name", "value": "lookup" } }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "String" } } }, { "kind": "VariableDefinition", "variable": { "kind": "Variable", "name": { "kind": "Name", "value": "first" } }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Int" } }, "defaultValue": { "kind": "IntValue", "value": "50" } }, { "kind": "VariableDefinition", "variable": { "kind": "Variable", "name": { "kind": "Name", "value": "thumbnailWidth" } }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Int" } }, "defaultValue": { "kind": "IntValue", "value": "500" } }], "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "playlist" }, "arguments": [{ "kind": "Argument", "name": { "kind": "Name", "value": "id" }, "value": { "kind": "Variable", "name": { "kind": "Name", "value": "id" } } }, { "kind": "Argument", "name": { "kind": "Name", "value": "lookup" }, "value": { "kind": "Variable", "name": { "kind": "Name", "value": "lookup" } } }], "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "id" } }, { "kind": "Field", "name": { "kind": "Name", "value": "title" } }, { "kind": "Field", "name": { "kind": "Name", "value": "description" } }, { "kind": "Field", "name": { "kind": "Name", "value": "permalink" } }, { "kind": "Field", "name": { "kind": "Name", "value": "privacy" } }, { "kind": "Field", "name": { "kind": "Name", "value": "updatedAt" } }, { "kind": "Field", "name": { "kind": "Name", "value": "items" }, "arguments": [{ "kind": "Argument", "name": { "kind": "Name", "value": "first" }, "value": { "kind": "Variable", "name": { "kind": "Name", "value": "first" } } }], "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "totalCount" } }, { "kind": "Field", "name": { "kind": "Name", "value": "pageInfo" }, "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "hasNextPage" } }, { "kind": "Field", "name": { "kind": "Name", "value": "hasPreviousPage" } }, { "kind": "Field", "name": { "kind": "Name", "value": "startCursor" } }, { "kind": "Field", "name": { "kind": "Name", "value": "endCursor" } }] } }, { "kind": "Field", "name": { "kind": "Name", "value": "edges" }, "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "node" }, "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "id" } }, { "kind": "Field", "name": { "kind": "Name", "value": "hologramId" } }, { "kind": "Field", "name": { "kind": "Name", "value": "position" } }, { "kind": "Field", "name": { "kind": "Name", "value": "hologram" }, "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "FragmentSpread", "name": { "kind": "Name", "value": "HologramRoot" } }] } }] } }] } }] } }, { "kind": "Field", "name": { "kind": "Name", "value": "thumbnail" }, "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "id" } }, { "kind": "Field", "name": { "kind": "Name", "value": "url" } }, { "kind": "Field", "name": { "kind": "Name", "value": "width" } }, { "kind": "Field", "name": { "kind": "Name", "value": "height" } }, { "kind": "Field", "name": { "kind": "Name", "value": "type" } }] } }] } }] } }, { "kind": "FragmentDefinition", "name": { "kind": "Name", "value": "HologramRoot" }, "typeCondition": { "kind": "NamedType", "name": { "kind": "Name", "value": "Hologram" } }, "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "id" } }, { "kind": "Field", "name": { "kind": "Name", "value": "title" } }, { "kind": "Field", "name": { "kind": "Name", "value": "description" } }, { "kind": "Field", "name": { "kind": "Name", "value": "permalink" } }, { "kind": "Field", "name": { "kind": "Name", "value": "aspectRatio" } }, { "kind": "Field", "name": { "kind": "Name", "value": "quiltCols" } }, { "kind": "Field", "name": { "kind": "Name", "value": "quiltRows" } }, { "kind": "Field", "name": { "kind": "Name", "value": "quiltTileCount" } }, { "kind": "Field", "name": { "kind": "Name", "value": "privacy" } }, { "kind": "Field", "name": { "kind": "Name", "value": "type" } }, { "kind": "Field", "name": { "kind": "Name", "value": "thumbnail" }, "arguments": [{ "kind": "Argument", "name": { "kind": "Name", "value": "width" }, "value": { "kind": "Variable", "name": { "kind": "Name", "value": "thumbnailWidth" } } }], "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "url" } }, { "kind": "Field", "name": { "kind": "Name", "value": "width" } }, { "kind": "Field", "name": { "kind": "Name", "value": "height" } }, { "kind": "Field", "name": { "kind": "Name", "value": "type" } }] } }, { "kind": "Field", "name": { "kind": "Name", "value": "user" }, "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "id" } }, { "kind": "Field", "name": { "kind": "Name", "value": "username" } }, { "kind": "Field", "name": { "kind": "Name", "value": "displayName" } }, { "kind": "Field", "name": { "kind": "Name", "value": "picture" } }] } }, { "kind": "Field", "name": { "kind": "Name", "value": "sourceImages" }, "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "id" } }, { "kind": "Field", "name": { "kind": "Name", "value": "url" } }, { "kind": "Field", "name": { "kind": "Name", "value": "width" } }, { "kind": "Field", "name": { "kind": "Name", "value": "height" } }, { "kind": "Field", "name": { "kind": "Name", "value": "type" } }, { "kind": "Field", "name": { "kind": "Name", "value": "fileSize" } }] } }, { "kind": "Field", "name": { "kind": "Name", "value": "previewGifAssets" }, "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "url" } }, { "kind": "Field", "name": { "kind": "Name", "value": "width" } }, { "kind": "Field", "name": { "kind": "Name", "value": "height" } }, { "kind": "Field", "name": { "kind": "Name", "value": "type" } }] } }, { "kind": "Field", "name": { "kind": "Name", "value": "previewVideoAssets" }, "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "url" } }, { "kind": "Field", "name": { "kind": "Name", "value": "width" } }, { "kind": "Field", "name": { "kind": "Name", "value": "height" } }, { "kind": "Field", "name": { "kind": "Name", "value": "type" } }] } }, { "kind": "Field", "name": { "kind": "Name", "value": "rgbdAssets" }, "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "url" } }, { "kind": "Field", "name": { "kind": "Name", "value": "width" } }, { "kind": "Field", "name": { "kind": "Name", "value": "height" } }, { "kind": "Field", "name": { "kind": "Name", "value": "type" } }, { "kind": "Field", "name": { "kind": "Name", "value": "kind" } }] } }] } }] };
   const MeDocument = { "kind": "Document", "definitions": [{ "kind": "OperationDefinition", "operation": "query", "name": { "kind": "Name", "value": "Me" }, "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "me" }, "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "id" } }, { "kind": "Field", "name": { "kind": "Name", "value": "username" } }, { "kind": "Field", "name": { "kind": "Name", "value": "displayName" } }, { "kind": "Field", "name": { "kind": "Name", "value": "email" } }, { "kind": "Field", "name": { "kind": "Name", "value": "picture" } }, { "kind": "Field", "name": { "kind": "Name", "value": "createdAt" } }] } }] } }] };
   const MyHologramsDocument = { "kind": "Document", "definitions": [{ "kind": "OperationDefinition", "operation": "query", "name": { "kind": "Name", "value": "MyHolograms" }, "variableDefinitions": [{ "kind": "VariableDefinition", "variable": { "kind": "Variable", "name": { "kind": "Name", "value": "first" } }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Int" } }, "defaultValue": { "kind": "IntValue", "value": "20" } }, { "kind": "VariableDefinition", "variable": { "kind": "Variable", "name": { "kind": "Name", "value": "thumbnailWidth" } }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Int" } }, "defaultValue": { "kind": "IntValue", "value": "500" } }], "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "me" }, "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "username" } }, { "kind": "Field", "name": { "kind": "Name", "value": "displayName" } }, { "kind": "Field", "name": { "kind": "Name", "value": "holograms" }, "arguments": [{ "kind": "Argument", "name": { "kind": "Name", "value": "first" }, "value": { "kind": "Variable", "name": { "kind": "Name", "value": "first" } } }], "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "nodes" }, "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "FragmentSpread", "name": { "kind": "Name", "value": "HologramRoot" } }] } }] } }] } }] } }, { "kind": "FragmentDefinition", "name": { "kind": "Name", "value": "HologramRoot" }, "typeCondition": { "kind": "NamedType", "name": { "kind": "Name", "value": "Hologram" } }, "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "id" } }, { "kind": "Field", "name": { "kind": "Name", "value": "title" } }, { "kind": "Field", "name": { "kind": "Name", "value": "description" } }, { "kind": "Field", "name": { "kind": "Name", "value": "permalink" } }, { "kind": "Field", "name": { "kind": "Name", "value": "aspectRatio" } }, { "kind": "Field", "name": { "kind": "Name", "value": "quiltCols" } }, { "kind": "Field", "name": { "kind": "Name", "value": "quiltRows" } }, { "kind": "Field", "name": { "kind": "Name", "value": "quiltTileCount" } }, { "kind": "Field", "name": { "kind": "Name", "value": "privacy" } }, { "kind": "Field", "name": { "kind": "Name", "value": "type" } }, { "kind": "Field", "name": { "kind": "Name", "value": "thumbnail" }, "arguments": [{ "kind": "Argument", "name": { "kind": "Name", "value": "width" }, "value": { "kind": "Variable", "name": { "kind": "Name", "value": "thumbnailWidth" } } }], "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "url" } }, { "kind": "Field", "name": { "kind": "Name", "value": "width" } }, { "kind": "Field", "name": { "kind": "Name", "value": "height" } }, { "kind": "Field", "name": { "kind": "Name", "value": "type" } }] } }, { "kind": "Field", "name": { "kind": "Name", "value": "user" }, "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "id" } }, { "kind": "Field", "name": { "kind": "Name", "value": "username" } }, { "kind": "Field", "name": { "kind": "Name", "value": "displayName" } }, { "kind": "Field", "name": { "kind": "Name", "value": "picture" } }] } }, { "kind": "Field", "name": { "kind": "Name", "value": "sourceImages" }, "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "id" } }, { "kind": "Field", "name": { "kind": "Name", "value": "url" } }, { "kind": "Field", "name": { "kind": "Name", "value": "width" } }, { "kind": "Field", "name": { "kind": "Name", "value": "height" } }, { "kind": "Field", "name": { "kind": "Name", "value": "type" } }, { "kind": "Field", "name": { "kind": "Name", "value": "fileSize" } }] } }, { "kind": "Field", "name": { "kind": "Name", "value": "previewGifAssets" }, "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "url" } }, { "kind": "Field", "name": { "kind": "Name", "value": "width" } }, { "kind": "Field", "name": { "kind": "Name", "value": "height" } }, { "kind": "Field", "name": { "kind": "Name", "value": "type" } }] } }, { "kind": "Field", "name": { "kind": "Name", "value": "previewVideoAssets" }, "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "url" } }, { "kind": "Field", "name": { "kind": "Name", "value": "width" } }, { "kind": "Field", "name": { "kind": "Name", "value": "height" } }, { "kind": "Field", "name": { "kind": "Name", "value": "type" } }] } }, { "kind": "Field", "name": { "kind": "Name", "value": "rgbdAssets" }, "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "url" } }, { "kind": "Field", "name": { "kind": "Name", "value": "width" } }, { "kind": "Field", "name": { "kind": "Name", "value": "height" } }, { "kind": "Field", "name": { "kind": "Name", "value": "type" } }, { "kind": "Field", "name": { "kind": "Name", "value": "kind" } }] } }] } }] };
+  const VerifySessionDocument = { "kind": "Document", "definitions": [{ "kind": "OperationDefinition", "operation": "query", "name": { "kind": "Name", "value": "VerifySession" }, "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "me" }, "selectionSet": { "kind": "SelectionSet", "selections": [{ "kind": "Field", "name": { "kind": "Name", "value": "id" } }, { "kind": "Field", "name": { "kind": "Name", "value": "username" } }, { "kind": "Field", "name": { "kind": "Name", "value": "displayName" } }, { "kind": "Field", "name": { "kind": "Name", "value": "email" } }] } }] } }] };
   const HOLOGRAM_QUILT_IMAGE_FORMATS = ["png", "jpg", "jpeg", "webp", "bmp"];
   const HOLOGRAM_QUILT_IMAGE_MIMETYPES = HOLOGRAM_QUILT_IMAGE_FORMATS.map((f) => `image/${f}`);
   const defaults = {
@@ -119,6 +125,11 @@ var __publicField = (obj, key, value) => {
     constructor(args) {
       __publicField(this, "args");
       this.args = { ...defaults, ...args };
+    }
+    async verifySession() {
+      return await this.request({
+        document: VerifySessionDocument
+      });
     }
     async me() {
       return (await this.request({
@@ -150,18 +161,22 @@ var __publicField = (obj, key, value) => {
         }
       })).me;
     }
-    async uploadAndCreateQuiltHologram(file, args) {
-      await this.uploadImage(file);
+    async uploadAndCreateQuiltHologram(file, data) {
+      const imageUrl = await this.uploadImage(file);
       return (await this.request({
         document: CreateQuiltHologramDocument,
-        variables: { data: args }
+        variables: {
+          data: { ...data, imageUrl }
+        }
       })).createQuiltHologram;
     }
     async uploadAndCreateRgbdHologram(file, data) {
-      await this.uploadImage(file);
+      const imageUrl = await this.uploadImage(file);
       return (await this.request({
         document: CreateRgbdHologramDocument,
-        variables: { data }
+        variables: {
+          data: { ...data, imageUrl }
+        }
       })).createHologramFromImage;
     }
     async updateHologram(data) {
@@ -223,8 +238,7 @@ var __publicField = (obj, key, value) => {
       return await graphqlRequest.request(test);
     }
   }
-  const SESSION_KEY = "blocksToken";
-  const SESSION_EXPIRATION_DAYS = 30;
+  let USER_JWT = "";
   function createAuthClient(options) {
     var _a, _b, _c, _d;
     return new auth0SpaJs.Auth0Client({
@@ -233,14 +247,14 @@ var __publicField = (obj, key, value) => {
       clientId: (_b = options.clientId) != null ? _b : "",
       authorizationParams: {
         audience: (_d = (_c = options.authorizationParams) == null ? void 0 : _c.audience) != null ? _d : "https://blocks.glass"
-      }
+      },
+      sessionCheckExpiryDays: 30
     });
   }
   async function loginWithRedirect(authClient, redirectUri) {
     return await (authClient == null ? void 0 : authClient.loginWithRedirect({
       authorizationParams: {
-        redirect_uri: redirectUri,
-        max_age: 60 * 60 * 24 * SESSION_EXPIRATION_DAYS
+        redirect_uri: redirectUri
       }
     }));
   }
@@ -257,18 +271,21 @@ var __publicField = (obj, key, value) => {
       }
       const isAuthenticated2 = await authClient.isAuthenticated();
       if (isAuthenticated2) {
-        const token = await authClient.getTokenSilently();
-        setCookie(SESSION_KEY, token, SESSION_EXPIRATION_DAYS);
+        USER_JWT = await authClient.getTokenSilently();
         window.history.replaceState({}, document.title, window.location.pathname);
-        return token;
+        return USER_JWT;
       }
-    } else if (isAuthenticated()) {
+    } else {
+      try {
+        USER_JWT = await authClient.getTokenSilently();
+      } catch (e) {
+        USER_JWT = "";
+      }
       return getToken();
     }
     return null;
   }
   async function logout(authClient, enableRedirect = true) {
-    setCookie(SESSION_KEY, "", -1);
     await authClient.logout({
       onRedirect: enableRedirect ? void 0 : async (url) => {
       }
@@ -278,31 +295,12 @@ var __publicField = (obj, key, value) => {
     return getToken() != "";
   }
   function getToken() {
-    return getCookie(SESSION_KEY);
-  }
-  function setCookie(name, value, days) {
-    const date = new Date();
-    date.setTime(date.getTime() + days * 24 * 60 * 60 * 1e3);
-    const expires = "; expires=" + date.toUTCString();
-    document.cookie = name + "=" + (value || "") + expires + "; path=/";
-  }
-  function getCookie(name) {
-    const nameEQ = name + "=";
-    const ca = document.cookie.split(";");
-    for (let i = 0; i < ca.length; i++) {
-      let c = ca[i];
-      while (c.charAt(0) === " ")
-        c = c.substring(1, c.length);
-      if (c.indexOf(nameEQ) === 0)
-        return c.substring(nameEQ.length, c.length);
-    }
-    return "";
+    return USER_JWT;
   }
   exports2.BlocksClient = BlocksClient;
   exports2.BlocksSpaAuth = BlocksSpaAuth;
   exports2.HOLOGRAM_QUILT_IMAGE_FORMATS = HOLOGRAM_QUILT_IMAGE_FORMATS;
   exports2.HOLOGRAM_QUILT_IMAGE_MIMETYPES = HOLOGRAM_QUILT_IMAGE_MIMETYPES;
-  exports2.SESSION_KEY = SESSION_KEY;
   exports2.createAuthClient = createAuthClient;
   exports2.getToken = getToken;
   exports2.isAuthenticated = isAuthenticated;
