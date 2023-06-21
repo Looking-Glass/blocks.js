@@ -24,12 +24,19 @@ function bindListeners(authClient: Auth0Client) {
 }
 
 async function updateUI() {
+	const loginBtn = LoginBtn()
+	const logoutBtn = LogoutBtn()
+
 	if (isAuthenticated()) {
 		document.body.classList.remove("logged-out")
 		document.body.classList.add("logged-in")
 
-		LoginBtn()!.style.display = "none"
-		LogoutBtn()!.style.display = ""
+		if (loginBtn){
+			loginBtn.style.display = 'none'
+		}
+		if (logoutBtn){
+			logoutBtn.style.display = ''
+		}
 
 		LoggedInEls().forEach((el) => {
 			el.style.display = ""
@@ -41,8 +48,12 @@ async function updateUI() {
 		document.body.classList.remove("logged-in")
 		document.body.classList.add("logged-out")
 
-		LoginBtn()!.style.display = ""
-		LogoutBtn()!.style.display = "none"
+		if (loginBtn){
+			loginBtn.style.display = ''
+		}
+		if (logoutBtn){
+			logoutBtn.style.display = 'none'
+		}
 
 		LoggedInEls().forEach((el) => {
 			el.style.display = "none"
