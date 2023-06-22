@@ -1,5 +1,5 @@
 import { Auth0Client } from "@auth0/auth0-spa-js"
-import { isAuthenticated, logout, validateSession } from "./main"
+import { isAuthenticated, logout, logoutWithRedirect, validateSession } from "./main"
 
 const LoginBtn = () => document.querySelector<HTMLAnchorElement>("[data-login]")
 const LogoutBtn = () => document.querySelector<HTMLAnchorElement>("[data-logout]")
@@ -16,27 +16,31 @@ function bindListeners(authClient: Auth0Client) {
 			},
 		})
 	})
+	
+	const logoutBtn = LogoutBtn()
 
-	LogoutBtn()?.addEventListener("click", async () => {
-		await logout(authClient, false)
-		await updateUI()
-	})
+	if (logoutBtn){
+		const redirect = logoutBtn.dataset.redirect
+		if (redirect) {
+			logoutBtn.addEventListener('click', async () => {
+				console.log('asdfasd')
+				await logoutWithRedirect(authClient, redirect)
+				await updateUI()
+			})
+		}
+		else {
+			logoutBtn.addEventListener("click", async () => {
+				await logout(authClient, false)
+				await updateUI()
+			})
+		}
+	}
 }
 
 async function updateUI() {
-	const loginBtn = LoginBtn()
-	const logoutBtn = LogoutBtn()
-
 	if (isAuthenticated()) {
 		document.body.classList.remove("logged-out")
 		document.body.classList.add("logged-in")
-
-		if (loginBtn){
-			loginBtn.style.display = 'none'
-		}
-		if (logoutBtn){
-			logoutBtn.style.display = ''
-		}
 
 		LoggedInEls().forEach((el) => {
 			el.style.display = ""
@@ -47,13 +51,6 @@ async function updateUI() {
 	} else {
 		document.body.classList.remove("logged-in")
 		document.body.classList.add("logged-out")
-
-		if (loginBtn){
-			loginBtn.style.display = ''
-		}
-		if (logoutBtn){
-			logoutBtn.style.display = 'none'
-		}
 
 		LoggedInEls().forEach((el) => {
 			el.style.display = "none"

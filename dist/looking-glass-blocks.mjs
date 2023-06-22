@@ -12,7 +12,7 @@ const LogoutBtn = () => document.querySelector("[data-logout]");
 const LoggedInEls = () => document.querySelectorAll("[data-logged-in]");
 const LoggedOutEls = () => document.querySelectorAll("[data-logged-out]");
 function bindListeners(authClient) {
-  var _a, _b;
+  var _a;
   (_a = LoginBtn()) == null ? void 0 : _a.addEventListener("click", async (ev) => {
     var _a2;
     const target = ev.target;
@@ -23,23 +23,27 @@ function bindListeners(authClient) {
       }
     }));
   });
-  (_b = LogoutBtn()) == null ? void 0 : _b.addEventListener("click", async () => {
-    await logout(authClient, false);
-    await updateUI();
-  });
+  const logoutBtn = LogoutBtn();
+  if (logoutBtn) {
+    const redirect = logoutBtn.dataset.redirect;
+    if (redirect) {
+      logoutBtn.addEventListener("click", async () => {
+        console.log("asdfasd");
+        await logoutWithRedirect(authClient, redirect);
+        await updateUI();
+      });
+    } else {
+      logoutBtn.addEventListener("click", async () => {
+        await logout(authClient, false);
+        await updateUI();
+      });
+    }
+  }
 }
 async function updateUI() {
-  const loginBtn = LoginBtn();
-  const logoutBtn = LogoutBtn();
   if (isAuthenticated()) {
     document.body.classList.remove("logged-out");
     document.body.classList.add("logged-in");
-    if (loginBtn) {
-      loginBtn.style.display = "none";
-    }
-    if (logoutBtn) {
-      logoutBtn.style.display = "";
-    }
     LoggedInEls().forEach((el) => {
       el.style.display = "";
     });
@@ -49,12 +53,6 @@ async function updateUI() {
   } else {
     document.body.classList.remove("logged-in");
     document.body.classList.add("logged-out");
-    if (loginBtn) {
-      loginBtn.style.display = "";
-    }
-    if (logoutBtn) {
-      logoutBtn.style.display = "none";
-    }
     LoggedInEls().forEach((el) => {
       el.style.display = "none";
     });
@@ -298,6 +296,9 @@ async function logout(authClient, enableRedirect = true) {
     }
   });
 }
+async function logoutWithRedirect(authClient, redirectURL) {
+  await authClient.logout({ logoutParams: { returnTo: redirectURL } });
+}
 function isAuthenticated() {
   return getToken() != "";
 }
@@ -318,5 +319,6 @@ export {
   isAuthenticated,
   loginWithRedirect,
   logout,
+  logoutWithRedirect,
   validateSession
 };

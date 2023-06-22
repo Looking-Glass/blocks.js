@@ -38,6 +38,7 @@
 - [isAuthenticated](README.md#isauthenticated)
 - [loginWithRedirect](README.md#loginwithredirect)
 - [logout](README.md#logout)
+- [logoutWithRedirect](README.md#logoutwithredirect)
 - [validateSession](README.md#validatesession)
 
 ## Type Aliases
@@ -244,6 +245,23 @@ Signs the user out
 | :------ | :------ | :------ |
 | `authClient` | `Auth0Client` | `undefined` |
 | `enableRedirect` | `boolean` | `true` |
+
+#### Returns
+
+`Promise`<`void`\>
+
+___
+
+### logoutWithRedirect
+
+▸ **logoutWithRedirect**(`authClient`, `redirectURL`): `Promise`<`void`\>
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `authClient` | `Auth0Client` |
+| `redirectURL` | `string` |
 
 #### Returns
 

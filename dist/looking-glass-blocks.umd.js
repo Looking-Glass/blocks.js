@@ -15,7 +15,7 @@ var __publicField = (obj, key, value) => {
   const LoggedInEls = () => document.querySelectorAll("[data-logged-in]");
   const LoggedOutEls = () => document.querySelectorAll("[data-logged-out]");
   function bindListeners(authClient) {
-    var _a, _b;
+    var _a;
     (_a = LoginBtn()) == null ? void 0 : _a.addEventListener("click", async (ev) => {
       var _a2;
       const target = ev.target;
@@ -26,23 +26,27 @@ var __publicField = (obj, key, value) => {
         }
       }));
     });
-    (_b = LogoutBtn()) == null ? void 0 : _b.addEventListener("click", async () => {
-      await logout(authClient, false);
-      await updateUI();
-    });
+    const logoutBtn = LogoutBtn();
+    if (logoutBtn) {
+      const redirect = logoutBtn.dataset.redirect;
+      if (redirect) {
+        logoutBtn.addEventListener("click", async () => {
+          console.log("asdfasd");
+          await logoutWithRedirect(authClient, redirect);
+          await updateUI();
+        });
+      } else {
+        logoutBtn.addEventListener("click", async () => {
+          await logout(authClient, false);
+          await updateUI();
+        });
+      }
+    }
   }
   async function updateUI() {
-    const loginBtn = LoginBtn();
-    const logoutBtn = LogoutBtn();
     if (isAuthenticated()) {
       document.body.classList.remove("logged-out");
       document.body.classList.add("logged-in");
-      if (loginBtn) {
-        loginBtn.style.display = "none";
-      }
-      if (logoutBtn) {
-        logoutBtn.style.display = "";
-      }
       LoggedInEls().forEach((el) => {
         el.style.display = "";
       });
@@ -52,12 +56,6 @@ var __publicField = (obj, key, value) => {
     } else {
       document.body.classList.remove("logged-in");
       document.body.classList.add("logged-out");
-      if (loginBtn) {
-        loginBtn.style.display = "";
-      }
-      if (logoutBtn) {
-        logoutBtn.style.display = "none";
-      }
       LoggedInEls().forEach((el) => {
         el.style.display = "none";
       });
@@ -301,6 +299,9 @@ var __publicField = (obj, key, value) => {
       }
     });
   }
+  async function logoutWithRedirect(authClient, redirectURL) {
+    await authClient.logout({ logoutParams: { returnTo: redirectURL } });
+  }
   function isAuthenticated() {
     return getToken() != "";
   }
@@ -316,6 +317,7 @@ var __publicField = (obj, key, value) => {
   exports2.isAuthenticated = isAuthenticated;
   exports2.loginWithRedirect = loginWithRedirect;
   exports2.logout = logout;
+  exports2.logoutWithRedirect = logoutWithRedirect;
   exports2.validateSession = validateSession;
   Object.defineProperties(exports2, { __esModule: { value: true }, [Symbol.toStringTag]: { value: "Module" } });
 });

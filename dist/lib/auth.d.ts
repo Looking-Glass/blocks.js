@@ -21,6 +21,7 @@ export declare function loginWithRedirect(authClient: Auth0Client, redirectUri: 
 export declare function validateSession(authClient: Auth0Client): Promise<string | null>;
 /** Signs the user out */
 export declare function logout(authClient: Auth0Client, enableRedirect?: boolean): Promise<void>;
+export declare function logoutWithRedirect(authClient: Auth0Client, redirectURL: string): Promise<void>;
 /** Returns if the user is logged in or not */
 export declare function isAuthenticated(): boolean;
 /**

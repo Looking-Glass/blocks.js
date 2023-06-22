@@ -90,6 +90,10 @@ export async function logout(authClient: Auth0Client, enableRedirect: boolean = 
 	})
 }
 
+export async function logoutWithRedirect(authClient: Auth0Client, redirectURL: string){
+	await authClient.logout({logoutParams: {returnTo: redirectURL}})
+}
+
 /** Returns if the user is logged in or not */
 export function isAuthenticated(): boolean {
 	return getToken() != ""
