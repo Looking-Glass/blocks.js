@@ -28,7 +28,6 @@ function bindListeners(authClient) {
     const redirect = logoutBtn.dataset.redirect;
     if (redirect) {
       logoutBtn.addEventListener("click", async () => {
-        console.log("asdfasd");
         await logoutWithRedirect(authClient, redirect);
         await updateUI();
       });
