@@ -10,11 +10,13 @@ function bindListeners(authClient: Auth0Client) {
 	LoginBtn()?.addEventListener("click", async (ev: MouseEvent) => {
 		const target = ev.target as HTMLDivElement
 		const redirect = target.dataset.redirect ?? window.location.href
-		await authClient?.loginWithRedirect({
-			authorizationParams: {
-				redirect_uri: redirect,
-			},
-		})
+		if (!isAuthenticated()){
+			await authClient?.loginWithRedirect({
+				authorizationParams: {
+					redirect_uri: redirect,
+				},
+			})
+		}
 	})
 	
 	const logoutBtn = LogoutBtn()

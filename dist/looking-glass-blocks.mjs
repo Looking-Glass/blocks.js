@@ -17,11 +17,13 @@ function bindListeners(authClient) {
     var _a2;
     const target = ev.target;
     const redirect = (_a2 = target.dataset.redirect) != null ? _a2 : window.location.href;
-    await (authClient == null ? void 0 : authClient.loginWithRedirect({
-      authorizationParams: {
-        redirect_uri: redirect
-      }
-    }));
+    if (!isAuthenticated()) {
+      await (authClient == null ? void 0 : authClient.loginWithRedirect({
+        authorizationParams: {
+          redirect_uri: redirect
+        }
+      }));
+    }
   });
   const logoutBtn = LogoutBtn();
   if (logoutBtn) {
