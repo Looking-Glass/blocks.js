@@ -254,7 +254,8 @@ function createAuthClient(options) {
     authorizationParams: {
       audience: (_d = (_c = options.authorizationParams) == null ? void 0 : _c.audience) != null ? _d : "https://blocks.glass"
     },
-    sessionCheckExpiryDays: 30
+    sessionCheckExpiryDays: 30,
+    cacheLocation: "localstorage"
   });
 }
 async function loginWithRedirect(authClient, redirectUri) {
