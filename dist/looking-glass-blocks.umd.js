@@ -31,17 +31,10 @@ var __publicField = (obj, key, value) => {
     const logoutBtn = LogoutBtn();
     if (logoutBtn) {
       const redirect = logoutBtn.dataset.redirect;
-      if (redirect) {
-        logoutBtn.addEventListener("click", async () => {
-          await logoutWithRedirect(authClient, redirect);
-          await updateUI();
-        });
-      } else {
-        logoutBtn.addEventListener("click", async () => {
-          await logout(authClient, false);
-          await updateUI();
-        });
-      }
+      logoutBtn.addEventListener("click", async () => {
+        await logoutWithRedirect(authClient, redirect != null ? redirect : window.location.href);
+        await updateUI();
+      });
     }
   }
   async function updateUI() {

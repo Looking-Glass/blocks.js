@@ -20,7 +20,6 @@ function bindListeners(authClient: Auth0Client) {
 	})
 	
 	const logoutBtn = LogoutBtn()
-
 	if (logoutBtn){
 		const redirect = logoutBtn.dataset.redirect
 		logoutBtn.addEventListener('click', async () => {
